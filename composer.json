@@ -11,7 +11,10 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+<<<<<<< HEAD
         "laravel/breeze": "^2.1",
+=======
+>>>>>>> 5c32dd7 (second commit)
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
