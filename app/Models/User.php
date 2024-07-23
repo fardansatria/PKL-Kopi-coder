@@ -6,10 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-<<<<<<< HEAD
-=======
-use Spatie\Permission\Traits\HasRoles;
->>>>>>> 5c32dd7 (second commit)
 
 class User extends Authenticatable
 {
@@ -24,10 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-<<<<<<< HEAD
-=======
         'role'
->>>>>>> 5c32dd7 (second commit)
     ];
 
     /**

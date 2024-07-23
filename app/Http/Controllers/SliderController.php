@@ -15,12 +15,19 @@ class SliderController extends Controller
         $headerSliders = Slider::where('type', 'header')->Get();
         $eventSliders = Slider::where('type', 'event')->Get();
 
-        return view('sliders.index', compact('headerSliders', 'eventSliders'));
+        return view('admin-feature.sliders.index', compact('headerSliders', 'eventSliders'));
+    }
+
+    public function showSlider()
+    {
+        $headerSlider = Slider::where('type', 'header')->get();
+        $eventSliders = Slider::where('type', 'event')->get();
+        return view('admin-feature.user.index', compact('headerSliders', 'eventSliders')); 
     }
 
     public function create()
     {
-        return view('sliders.create');
+        return view('admin-feature.sliders.create');
     }
 
     public function store(Request $request)
@@ -47,7 +54,7 @@ class SliderController extends Controller
     public function edit(string $id)
     {
         $slider = Slider::findOrFail($id);
-        return view('sliders.edit', compact('slider'));
+        return view('admin-feature.sliders.edit', compact('slider'));
     }
 
     public function update(Request $request, string $id)
@@ -85,7 +92,7 @@ class SliderController extends Controller
                 'type'    => $request->type,
             ]);
         }
-        return redirect()->route('sliders.index')
+        return redirect()->route('admin-feature.sliders.index')
         ->with('success', 'Slider berhasil diperbarui');
     }
 
@@ -99,7 +106,7 @@ class SliderController extends Controller
 
             $slider->delete();
 
-        return redirect()->route('sliders.index')
+        return redirect()->route('admin-feature.sliders.index')
         ->with('success', 'Slider berhasil di hapus');
     }
 }

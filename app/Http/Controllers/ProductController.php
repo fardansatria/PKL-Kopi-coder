@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Merek;
+use App\Models\merek;
 use App\Models\ProductImage;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -16,43 +16,71 @@ class ProductController extends Controller
     public function index(): View
     {
         $products = Product::latest()->paginate(10);
-        return view('products.index', compact('products'));
+        $mereks = Merek::all();
+        return view('admin-feature.products.index', compact('products', 'mereks')); // Tambahkan mereks ke compact
+    }
+
+    public function filter(Request $request): View
+    {
+        $title = $request->input('title');
+        $merek_id = $request->input('merek_id');
+        $min_price = $request->input('min_price');
+        $max_price = $request->input('max_price');
+
+        $query = Product::query();
+
+        if ($title) {
+            $query->where('title', 'like', '%' . $title . '%');
+        }
+        if ($merek_id) {
+            $query->where('merek_id', $merek_id);
+        }
+        if ($min_price) {
+            $query->where('price', '>=', $min_price);
+        }
+        if ($max_price) {
+            $query->where('price', '<=', $max_price);
+        }
+
+        $products = $query->latest()->paginate(10);
+        $mereks = Merek::all(); // Ambil semua mereks untuk filter
+        return view('admin-feature.products.index', compact('products', 'mereks')); // Tambahkan mereks ke compact
     }
 
     public function create(): View
     {
         $mereks = Merek::all(); // Get all mereks
-        return view('products.create', compact('mereks'));
+        return view('admin-feature.products.create', compact('mereks'));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        //validasi form
+        // Validasi form
         $request->validate([
-            'image'         => 'required|image|mimes:jpeg,jpg,png|max:2048',
-            'images.*'      => 'image|mimes:jpeg,jpg,png|max:2048',
-            'title'         => 'required|min:5',
-            'description'   => 'required|min:10',
-            'price'         => 'required|numeric',
-            'stock'         => 'required|numeric',
-            'merek_id'      => 'required|exists:mereks,id'
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'images.*' => 'image|mimes:jpeg,jpg,png|max:2048',
+            'title' => 'required|min:5',
+            'description' => 'required|min:10',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'merek_id' => 'required|exists:mereks,id'
         ]);
 
-        //upload image
+        // Upload image
         $image = $request->file('image');
         $image->storeAs('public/products', $image->hashName());
 
-        //create product
+        // Create product
         $product = Product::create([
-            'image'         => $image->hashName(),
-            'title'         => $request->title,
-            'description'   => $request->description,
-            'price'         => $request->price,
-            'stock'         => $request->stock,
-            'merek_id'      => $request->merek_id
+            'image' => $image->hashName(),
+            'title' => $request->title,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'merek_id' => $request->merek_id
         ]);
 
-        // periksa image tambahan apakah di upload
+        // Periksa image tambahan apakah di upload
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $file->storeAs('public/products', $file->hashName());
@@ -64,22 +92,21 @@ class ProductController extends Controller
             }
         }
 
-        //redirect ke index
-        return redirect()->route('products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
+        // Redirect ke index
+        return redirect()->route('admin-feature.products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
     }
-
 
     public function show(string $id): View
     {
         $product = Product::findOrFail($id);
-        return view('products.detail', compact('product'));
+        return view('admin-feature.products.detail', compact('product'));
     }
 
     public function edit(string $id): View
     {
         $product = Product::findOrFail($id);
         $mereks = Merek::all();
-        return view('products.edit', compact('product', 'mereks'));
+        return view('admin-feature.products.edit', compact('product', 'mereks'));
     }
 
     public function update(Request $request, string $id): RedirectResponse
@@ -122,7 +149,6 @@ class ProductController extends Controller
 
         // Update tambahan images
         if ($request->hasFile('images')) {
-            
             foreach ($product->productImages as $productImage) {
                 if (Storage::exists('public/products/' . $productImage->image)) {
                     // Delete old tambahan images
@@ -134,7 +160,7 @@ class ProductController extends Controller
                 $productImage->delete();
             }
 
-            // tambah image tambahan
+            // Tambah image tambahan
             foreach ($request->file('images') as $file) {
                 $file->storeAs('public/products', $file->hashName());
 
@@ -147,7 +173,6 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with(['success' => 'Produk Berhasil diupdate']);
     }
-
 
     public function destroy(string $id): RedirectResponse
     {
@@ -167,6 +192,6 @@ class ProductController extends Controller
         // Hapus produk
         $product->delete();
 
-        return redirect()->route('products.index')->with(['success' => 'Produk Berhasil dihapus!']);
+        return redirect()->route('admin-feature.products.index')->with(['success' => 'Produk Berhasil dihapus!']);
     }
 }

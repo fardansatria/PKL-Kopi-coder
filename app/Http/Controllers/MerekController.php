@@ -27,12 +27,12 @@ class MerekController extends Controller
         $mereks = Merek::latest()->paginate(10);
 
         //render view with mereks
-        return view('merek.index', compact('mereks'));
+        return view('admin-feature.merek.index', compact('mereks'));
     }
 
     public function create(): View
     {
-        return view('merek.create');
+        return view('admin-feature.merek.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -56,12 +56,12 @@ class MerekController extends Controller
         ]);
 
         //redirect to index
-        return redirect()->route('merek.index')->with(['success' => 'Merek Berhasil Ditambahkan']);
+        return redirect()->route('admin-feature.merek.index')->with(['success' => 'Merek Berhasil Ditambahkan']);
     }
     public function edit(string $id): View
     {
         $merek = Merek::findOrFail($id);
-        return view('merek.edit', compact('merek'));
+        return view('admin-feature.merek.edit', compact('merek'));
     }
 
     public function update(Request $request, string $id): RedirectResponse
@@ -102,7 +102,7 @@ class MerekController extends Controller
             ]);
         }
 
-        return redirect()->route('merek.index')->with(['success' => 'Merek Berhasil Diupdate!']);
+        return redirect()->route('admin-feature.merek.index')->with(['success' => 'Merek Berhasil Diupdate!']);
     }
 
     public function destroy(string $id): RedirectResponse
@@ -115,6 +115,6 @@ class MerekController extends Controller
         //delete merek
         $merek->delete();
 
-        return redirect()->route('merek.index')->with(['success' => 'Merek Berhasil Dihapus!']);
+        return redirect()->route('admin-feature.merek.index')->with(['success' => 'Merek Berhasil Dihapus!']);
     }
 }
