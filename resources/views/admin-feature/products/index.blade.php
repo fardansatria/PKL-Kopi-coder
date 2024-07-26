@@ -80,7 +80,7 @@
                                         <td>{{ $product->title }}</td>
                                         <td>{{ "Rp " . number_format($product->price, 2, ',', '.') }}</td>
                                         <td>{{ $product->stock }}</td>
-                                        <td>{{ $product->merek->name }}</td>
+                                        <td>{{ optional($product->merek)->name }}</td>
                                         <td class="text-center">
                                             <div class="action-buttons">
                                                 <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-dark">SHOW</a>

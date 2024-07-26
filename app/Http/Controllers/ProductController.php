@@ -93,7 +93,7 @@ class ProductController extends Controller
         }
 
         // Redirect ke index
-        return redirect()->route('admin-feature.products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
+        return redirect()->route('products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
     }
 
     public function show(string $id): View
@@ -192,6 +192,6 @@ class ProductController extends Controller
         // Hapus produk
         $product->delete();
 
-        return redirect()->route('admin-feature.products.index')->with(['success' => 'Produk Berhasil dihapus!']);
+        return redirect()->route('products.index')->with(['success' => 'Produk Berhasil dihapus!']);
     }
 }

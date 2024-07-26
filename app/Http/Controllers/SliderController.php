@@ -5,24 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Slider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
-
 use Illuminate\Http\Request;
 
 class SliderController extends Controller
 {
     public function index()
     {
-        $headerSliders = Slider::where('type', 'header')->Get();
-        $eventSliders = Slider::where('type', 'event')->Get();
+        $headerSliders = Slider::where('type', 'header')->get();
+        $eventSliders = Slider::where('type', 'event')->get();
 
         return view('admin-feature.sliders.index', compact('headerSliders', 'eventSliders'));
     }
 
-    public function showSlider()
+    public function showSliders()
     {
-        $headerSlider = Slider::where('type', 'header')->get();
+        $headerSliders = Slider::where('type', 'header')->get();
         $eventSliders = Slider::where('type', 'event')->get();
-        return view('admin-feature.user.index', compact('headerSliders', 'eventSliders')); 
+        return view('user.index', compact('headerSliders', 'eventSliders'));
     }
 
     public function create()
@@ -48,7 +47,7 @@ class SliderController extends Controller
         ]);
 
         return redirect()->route('sliders.index')
-            ->with('succes', 'Berhasil membuat slider');
+            ->with('success', 'Berhasil membuat slider');
     }
 
     public function edit(string $id)
@@ -67,46 +66,43 @@ class SliderController extends Controller
 
         $slider = Slider::findOrFail($id);
         if ($request->hasFile('image')) {
-
-            if (file::exists(public_path('images/' . $slider->image))) {
-                file::delete(public_path('images/' . $slider->image));
+            if (File::exists(public_path('images/' . $slider->image))) {
+                File::delete(public_path('images/' . $slider->image));
                 Log::info('Deleted old image: ' . $slider->image);
             } else {
                 Log::warning('Old image not found: ' . $slider->image);
             }
 
-           
-                $imageName = time() . '.' . $request->image->extension();
-                $request->image->move(public_path('images'), $imageName);
-                $slider->image =$imageName;
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $slider->image = $imageName;
 
             $slider->update([
                 'title'   => $request->title,
                 'image'   => $imageName,
                 'type'    => $request->type,
             ]);
-        }
-        else {
+        } else {
             $slider->update([
                 'title'   => $request->title,
                 'type'    => $request->type,
             ]);
         }
-        return redirect()->route('admin-feature.sliders.index')
-        ->with('success', 'Slider berhasil diperbarui');
+        return redirect()->route('sliders.index')
+            ->with('success', 'Slider berhasil diperbarui');
     }
 
     public function destroy(string $id)
     {
         $slider = Slider::findOrFail($id);
 
-           if (file::exists(public_path('images/'. $slider->image))) {
-               file::delete(public_path('images/' . $slider->image));
-           }
+        if (File::exists(public_path('images/' . $slider->image))) {
+            File::delete(public_path('images/' . $slider->image));
+        }
 
-            $slider->delete();
+        $slider->delete();
 
-        return redirect()->route('admin-feature.sliders.index')
-        ->with('success', 'Slider berhasil di hapus');
+        return redirect()->route('sliders.index')
+            ->with('success', 'Slider berhasil dihapus');
     }
 }

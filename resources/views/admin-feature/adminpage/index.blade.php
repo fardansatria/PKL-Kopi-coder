@@ -58,6 +58,10 @@
         </ol>
       </nav>
     </div><!-- End Page Title -->
+    <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <input type="submit" name="logout" value="logout">
 
     <section class="section dashboard">
       <div class="row">

@@ -1,7 +1,18 @@
-@extends()
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- halaman untuk user
-jika ingin mengubah nama file maka ubah juga UserController
-return view('user.index', compact('products', 'mereks', 'headerSliders', 'eventSliders'));
-ubah file di atas contoh:
-return view('nama folder.nama file', compact('products', 'mereks', 'headerSliders', 'eventSliders')); -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="hero_area">
+        @include('user.header')
+    </div>
+        @include('user.products')
+    
+</body>
+
+</html>
