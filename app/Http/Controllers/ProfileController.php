@@ -11,13 +11,15 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+  
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $profile = $user->profile; // Pastikan model User memiliki relasi profile
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'profile' => $profile,
         ]);
     }
 

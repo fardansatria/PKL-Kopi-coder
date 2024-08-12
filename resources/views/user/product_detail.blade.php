@@ -54,42 +54,15 @@
 
         .btn {
             background-color: #333;
-            border-radius: 10px 0px 10px 0px;
             width: 60px;
             height: 30px;
             margin-left: 35%;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .btn:hover {
-            background-color: #fff;
-            border: 1px solid black;
         }
 
         .btn a {
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .btn a:hover {
-            color: black;
-        }
-
-        .btn-cart {
-            background-color: black;
-            margin-top: 10px;
-            border-radius: 0px 10px 0px 10px;
-            width: 60px;
-            height: 30px;
-            margin-left: 35%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-cart a {
             text-decoration: none;
             color: #fff;
         }
@@ -100,23 +73,14 @@
 <body>
     <h1>Our Products</h1>
     <div class="product-container">
-        @foreach($products as $product)
         <div class="product-card">
-            <img src="{{ asset('/storage/products/' . $product->image) }}" alt="{{ $product->name }}" class="product-image">
+            <img src="{{ asset('/storage/products/' . $data->image) }}" alt="{{ $data->name }}" class="product-image">
             <div class="product-info">
-                <div class="product-title">{{ $product->name }}</div>
-                <div class="product-price">RP {{ $product->price  }}</div>
-                <div class="product-description">{{ Str::limit($product->description, 50) }}</div>  
-            </div>
-            <div class="btn">
-                <a href="{{ url('product_detail', $product->id)}}">Detail</a>
-            </div>
-
-            <div class="btn-cart">
-                <a href="{{ url('add_cart', $product->id)}}">Cart</a>
+                <div class="product-title">{{ $data->name }}</div>
+                <div class="product-price">RP {{ $data->price }}</div>
+                <div class="product-description">{{ Str::limit($data->description) }}</div>  
             </div>
         </div>
-        @endforeach
     </div>
 </body>
 

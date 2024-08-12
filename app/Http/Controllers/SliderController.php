@@ -21,7 +21,7 @@ class SliderController extends Controller
     {
         $headerSliders = Slider::where('type', 'header')->get();
         $eventSliders = Slider::where('type', 'event')->get();
-        return view('user.index', compact('headerSliders', 'eventSliders'));
+        return view('user.slider', compact('headerSliders', 'eventSliders'));
     }
 
     public function create()
