@@ -4,84 +4,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>Product Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-        .product-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin: 20px;
-        }
-
-        .product-card {
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
-            width: 200px;
-            margin: 10px;
-            text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
-        .product-card:hover {
-            transform: scale(1.05);
-        }
-
-        .product-image {
+        .product-image-large {
+            max-width: 600px;
             width: 100%;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            height: auto;
+            border-radius: 10px;
+            margin-right: 20px;
         }
 
-        .product-info {
-            padding: 10px;
+        .product-details {
+            flex: 1;
+            padding: 20px;
         }
 
         .product-title {
-            font-size: 18px;
+            font-size: 28px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .product-price {
             color: #28a745;
-            font-size: 16px;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
+
         .product-description {
-            font-size: 14px;
-            color: #555;
-            margin-top: 10px;
+            font-size: 16px;
+            color: #000;
+            margin-top: 20px;
         }
 
-        .btn {
-            background-color: #333;
-            width: 60px;
-            height: 30px;
-            margin-left: 35%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .product-availability {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 20px;
         }
 
-        .btn a {
-            text-decoration: none;
-            color: #fff;
+        .product-rating {
+            margin-bottom: 20px;
         }
 
+        .stars {
+            color: #ffd700;
+        }
+
+        .add-to-cart-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Our Products</h1>
-    <div class="product-container">
-        <div class="product-card">
-            <img src="{{ asset('/storage/products/' . $data->image) }}" alt="{{ $data->name }}" class="product-image">
-            <div class="product-info">
-                <div class="product-title">{{ $data->name }}</div>
-                <div class="product-price">RP {{ $data->price }}</div>
-                <div class="product-description">{{ Str::limit($data->description) }}</div>  
+    @include('user.header')
+    <div class="product-detail-container">
+        <img src="{{ asset('/storage/products/' . $data->image) }}" alt="{{ $data->name }}" class="product-image-large">
+
+        <div class="product-details">
+            <div class="product-title">{{ $data->title }}</div>
+            <div class="product-price">RP {{ number_format( $data->price, 0, ',', '.' )}}</div>
+            <div class="product-rating">
+                <span class="stars">★★★★☆</span> <!-- Example rating, you can use dynamic content here -->
+                <span>(120 reviews)</span>
+            </div>
+            <div class="product-availability">Stock : {{ $data->stock }}</div>
+
+            <div class="btn-cart">
+                <form action="{{ url('add_cart', $data->id) }}" method="POST" class="btn-cart-form">
+                    @csrf
+                    <input type="number" name="qty" min="1" value="1">
+                    <button type="submit" class="add-to-cart-btn">Add To cart</button>
+                    </button>
+                </form>
+
+                <form action="{{ route('checkout.product', ['product_id' => $data->id]) }}" method="GET">
+                    <button type="submit" class="add-to-cart-btn">Bayar</button>
+                </form>
+                <div class="product-description">{{ $data->description }}</div>
             </div>
         </div>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Message with Sweetalert
+    @if(session('success'))
+    Swal.fire({
+        icon: "success",
+        title: "BERHASIL",
+        text: "{{ session('success') }}",
+        showConfirmButton: false,
+        timer: 2000
+    });
+    @elseif(session('error'))
+    Swal.fire({
+        icon: "error",
+        title: "GAGAL!",
+        text: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 2000
+    });
+    @endif
+</script>
 
 </html>

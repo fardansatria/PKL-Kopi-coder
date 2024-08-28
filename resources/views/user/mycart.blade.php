@@ -7,37 +7,35 @@
     <title>Keranjang Belanja</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             color: #333;
             margin: 0;
             padding: 0;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .header {
-            padding: 10px 0;
+        header {
             background-color: #343a40;
             color: white;
-            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
+
+
         .cart-section {
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .cart-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .cart-table th,
@@ -50,12 +48,18 @@
         .cart-table th {
             background-color: #007bff;
             color: white;
+            font-weight: 500;
         }
 
         .cart-table img {
             max-width: 100px;
             height: auto;
             border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-table img:hover {
+            transform: scale(1.1);
         }
 
         .cart-table button {
@@ -65,6 +69,7 @@
             padding: 8px 12px;
             cursor: pointer;
             border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
 
         .cart-table button:hover {
@@ -75,60 +80,103 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 30px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .cart-summary p {
-            font-size: 1.2em;
+            font-size: 1.4em;
             margin: 0;
         }
 
         .cart-summary .btn {
-            background-color: #007bff;
+            background-color: #28a745;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             text-decoration: none;
-            border-radius: 4px;
-            font-size: 1em;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
         }
 
         .cart-summary .btn:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
 
         .empty-cart {
             text-align: center;
-            padding: 50px;
-            font-size: 1.2em;
+            padding: 60px;
+            font-size: 1.4em;
             color: #6c757d;
         }
 
         .cart-value {
             text-align: center;
-            margin-bottom: 70px;
-            padding: 18px;
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-value h3 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
         }
 
         .order {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .order label{
-            display: inline-block;
-            width: 100px;
+        .order div {
+            margin-bottom: 15px;
+        }
+
+        .order label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .order input,
+        .order textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .order input.btn {
+            width: auto;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .order input.btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 
 <body>
-    <div class="hero_area">
-        @include('user.header')
-    </div>
+    @include('user.header')
 
     <div class="container">
         <div class="header">
@@ -136,66 +184,40 @@
         </div>
 
         <div class="cart-section">
+        <?php $value = 0; ?>
             @if($cart->isEmpty())
             <div class="empty-cart">
                 <p>Keranjang belanja Anda kosong.</p>
             </div>
             @else
-
-            <div class="order">
-                <form action="{{url('confirm_order')}}" method="POST">
-                    <div>
-                        <label for="">name</label>
-                        <input type="text" name="name" value="{{Auth::user()->name}}">
-                    </div>
-                    <div>
-                        <label for="">email</label>
-                        <input type="text" name="email" value="{{Auth::user()->email}}">
-                    </div>
-                    <div>
-                        <label for="">addres</label>
-                      <textarea name="addres" id=""></textarea>
-                    </div>
-                    <div>
-                        <label for="">phone</label>
-                        <input type="text" name="phone" id="">
-                    </div>
-                    <div>
-                        <input class="btn btn-danger" type="submit" value="place order">
-                    </div>
-                </form>
-            </div>
-
             <table class="cart-table">
                 <thead>
                     <tr>
                         <th>Gambar</th>
                         <th>Nama Produk</th>
                         <th>Harga</th>
-                        <th>Jumlah</th>
+                        <th>Qty</th>
+                        <th>Total</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <?php
-                $value = 0;
-                ?>
-
                 <tbody>
+                    
                     @foreach($cart as $cart)
                     <tr>
                         <td><img src="{{ asset('storage/products/' . $cart->product->image) }}" alt="{{ $cart->product->title }}"></td>
                         <td>{{ $cart->product->title }}</td>
                         <td>{{ number_format($cart->product->price, 2, ',', '.') }}</td>
+                        <td>{{ $cart->qty }}</td>
+                        <td>{{ number_format($cart->product->price * $cart->qty, 2, ',', '.') }}</td>
                         <td>
-                        </td>
-                        <td>
-                            <a class="btn btn-danger" href="{{url('delete_cart', $cart->id)}}">Hapus</a>
+                            <form action="{{ url('cart_delete', $cart->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus item ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Hapus</button>
                         </td>
                     </tr>
-
-                    <?php
-                    $value = $value + $cart->product->price;
-                    ?>
+                    <?php $value += $cart->product->price * $cart->qty; ?>
                     @endforeach
                 </tbody>
             </table>
@@ -203,15 +225,38 @@
         </div>
     </div>
 
+
     <div class="cart-value">
-        <h3>total : {{ number_format($value, 2, ',', '.')}}</h3>
+        <h3>Total: Rp {{ number_format($value, 2, ',', '.') }}</h3>
         <div>
-            <a class="btn btn-danger" href="">Bayar</a>
+            <a class="btn btn-primary" href="{{ route('checkout.index') }}">Bayar</a>
         </div>
     </div>
 
-
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Message with Sweetalert
+    @if(session('success'))
+    Swal.fire({
+        icon: "success",
+        title: "BERHASIL",
+        text: "{{ session('success') }}",
+        showConfirmButton: false,
+        timer: 2000
+    });
+    @elseif(session('error'))
+    Swal.fire({
+        icon: "error",
+        title: "GAGAL!",
+        text: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 2000
+    });
+    @endif
+</script>
 
 </html>

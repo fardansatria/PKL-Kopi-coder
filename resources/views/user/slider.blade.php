@@ -6,8 +6,10 @@
     <style>
         .carousel-item img {
             max-height: 300px; /* Atur tinggi maksimum gambar */
-            width: auto; /* Atur lebar otomatis */
+            width: 75%; /* Atur lebar otomatis */
             margin: 0 auto; /* Tengah-tengahkan gambar */
+            margin-top: 28px;
+            border-radius: 20px;
         }
     </style>
 </head>

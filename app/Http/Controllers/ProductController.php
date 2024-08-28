@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $products = Product::latest()->paginate(10);
         $mereks = Merek::all();
-        return view('admin-feature.products.index', compact('products', 'mereks')); // Tambahkan mereks ke compact
+        return view('admin-feature.products.index', compact('products', 'mereks')); 
     }
 
     public function filter(Request $request): View
@@ -44,7 +44,7 @@ class ProductController extends Controller
 
         $products = $query->latest()->paginate(10);
         $mereks = Merek::all(); // Ambil semua mereks untuk filter
-        return view('admin-feature.products.index', compact('products', 'mereks')); // Tambahkan mereks ke compact
+        return view('admin-feature.products.index', compact('products', 'mereks'));
     }
 
     public function create(): View
@@ -91,8 +91,6 @@ class ProductController extends Controller
                 ]);
             }
         }
-
-        // Redirect ke index
         return redirect()->route('products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
     }
 

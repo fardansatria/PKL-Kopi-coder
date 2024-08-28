@@ -129,7 +129,6 @@
                                         <td>{{ ucfirst($slider->type) }}</td>
                                         <td class="text-center">
                                             <div class="action-buttons">
-                                                <a href="{{ route('sliders.show', $slider->id) }}" class="btn btn-sm btn-dark">Show</a>
                                                 <a href="{{ route('sliders.edit', $slider->id) }}" class="btn btn-sm btn-primary">Edit</a>
                                                 <form onsubmit="return confirm('Are you sure?');" action="{{ route('sliders.destroy', $slider->id) }}" method="POST">
                                                     @csrf

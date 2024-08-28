@@ -9,76 +9,139 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
 
         header {
-            background-color: #333;
+            background: linear-gradient(90deg, #ff6b6b, #ff4757);
             color: white;
-            padding: 10px 0;
+            padding: 15px 0;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .container {
             width: 80%;
             margin: auto;
-            overflow: hidden;
-        }
-
-        nav {
-            float: right;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 7px 15px;
-            display: inline-block;
-        }
-
-        nav a:hover {
-            background-color: #575757;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header-title {
-            float: left;
+            flex: 1;
         }
 
         .header-title h1 {
             margin: 0;
             padding: 0;
+            margin-right: 250px;
+            text-decoration: underline #ccc 3px;
+            font-size: 25px;
+            font-weight: 500;
         }
 
-        .header-title h2 {
-            margin: 0;
-            padding: 0;
-            font-size: 14px;
-            color: #d3d3d3;
+        .center-nav {
+           display: inline-block;
         }
 
-        form {
-            display: inline;
-        }
-
-        form input[type="submit"] {
-            background-color: #ff2d20;
+        .center-nav a {
             color: white;
+            text-decoration: none;
+            padding: 7px 5px;
+            margin: 0 5px;
+            font-size: 16px;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .center-nav a:hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .center-nav a::after {
+            content: '';
+            position: absolute;
+            height: 2px;
+            width: 0;
+            bottom: 0;
+            left: 60%;
+            transform: translateX(-60%);
+            background-color: #fff;
+            transition: all .2s ease;
+        }
+
+        .center-nav a:hover::after {
+            width: 70%;
+        }
+
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .dropdown-menu {
+            background-color: #fff;
             border: none;
-            padding: 7px 15px;
-            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        form input[type="submit"]:hover {
-            background-color: #e0261b;
+        .dropdown-item {
+            color: #333;
+            font-size: 14px;
         }
 
-        .profile {
-            float: right;
-            margin-left: 15px;
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .cart {
+            color: white;
+            font-size: 18px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .cart:hover {
+            color: #ff4757;
+            transform: scale(1.1);
+        }
+
+        .cart-container {
+            color: white;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .cart-container:hover .cart {
+            color: #ff4757;
+            transform: scale(1.1);
+        }
+
+        .cart-container:hover .cart-count {
+            background-color: #fff;
+            color: black;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #333;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
@@ -87,21 +150,29 @@
     <header>
         <div class="container">
             <div class="header-title">
-                <h1>Halaman User</h1>
-                <h2>Kamu bisa melihat-lihat disini</h2>
+                <h1>Coder Store</h1>
             </div>
 
-            @if (Route::has('login'))
-            <nav>
+            <div class="center-nav">
+                <a href="{{route('dashboard')}}">Home</a>
+            </div>
+            <div class="center-nav">
+                <a href="{{route('dashboard')}}">Home</a>
+            </div>
+            <div class="center-nav">
+                <a href="{{route('dashboard')}}">Home</a>
+            </div>
+            <div class="center-nav">
+                <a href="{{route('dashboard')}}">Home</a>
+            </div>
+
+            <div class="profile-dropdown">
+                @if (Route::has('login'))
                 @auth
-                <a href="{{ url('mycart') }}">
-                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-                    {{ $count }}
+                <a href="{{ url('mycart') }}" class="cart-container">
+                    <i class="fa fa-shopping-bag" aria-hidden="true" class="cart"></i>
+                    <span class="cart-count">{{ $count }}</span>
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <input type="submit" value="Logout">
-                </form>
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="d-none d-md-block dropdown-toggle ps-2"> {{Auth::user()->name}} </span>
                 </a>
@@ -109,7 +180,7 @@
                 <!-- Dropdown Menu -->
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li>
-                        <a class="dropdown-item" href="{{route('user.profile.show')}}">
+                        <a class="dropdown-item" href="{{route('user.profile.edit')}}">
                             <i class="bi bi-person"></i> My Profile
                         </a>
                     </li>
@@ -118,10 +189,12 @@
                             <i class="bi bi-gear"></i> Settings
                         </a>
                     </li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li>
                         <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -131,13 +204,12 @@
                 </ul>
                 @else
                 <a href="{{ route('login') }}">Log in</a>
-
                 @if (Route::has('register'))
                 <a href="{{ route('register') }}">Register</a>
                 @endif
                 @endauth
-            </nav>
-            @endif
+                @endif
+            </div>
         </div>
     </header>
 

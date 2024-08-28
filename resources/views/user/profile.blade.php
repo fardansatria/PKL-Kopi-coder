@@ -1,87 +1,140 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">My Profile</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
+    <link rel="stylesheet" href="{{ asset('Profile Template/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+<body>
+    <div class="container light-style flex-grow-1 container-p-y">
+        <h4 class="font-weight-bold py-3 mb-4">
+            Pengaturan Akun
+        </h4>
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">Umum</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Ganti Kata Sandi</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Info</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Sosial Media</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Koneksi</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifikasi</a>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="account-general">
 
-                            <div class="form-group row">
-                                <label for="address" class="col-md-4 col-form-label text-md-right">Address</label>
+                            <!-- Profile Photo -->
+                            <div class="form-group">
+                                <label for="image">Profile Photo</label>
+                                <input type="file" name="image" class="form-control-file">
+                                @error('photo')
+                                <small class="text-danger">{{ $message }}</small>
+                                @enderror
 
-                                <div class="col-md-6">
-                                    <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ $userProfile->address }}" autocomplete="address" autofocus>
-
-                                    @error('address')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                @if($profile && $profile->photo)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/profile_photos/' . $profile->photo) }}" alt="Profile Photo" class="img-thumbnail" width="150">
                                 </div>
+                                @endif
+
+
                             </div>
+                            <hr class="border-light m-0">
+                            <div class="card-body">
+                                <form method="POST" action="{{ route('user.profile.edit') }}">
+                                    @csrf
+                                    @method('POST')
 
-                            <div class="form-group row">
-                                <label for="type" class="col-md-4 col-form-label text-md-right">Type</label>
+                                    <!-- Nama -->
+                                    <div class="form-group">
+                                        <label class="form-label">Nama</label>
+                                        <input type="text" name="name" class="form-control mb-1" value="{{ old('name', auth()->user()->name) }}" required>
+                                        @error('name')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
 
-                                <div class="col-md-6">
-                                    <select id="type" class="form-control @error('type') is-invalid @enderror" name="type">
-                                        <option value="laki_laki" {{ $userProfile->type == 'laki_laki' ? 'selected' : '' }}>Laki-laki</option>
-                                        <option value="perempuan" {{ $userProfile->type == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
-                                    </select>
+                                    <!-- Email -->
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control mb-1" value="{{ old('email', auth()->user()->email) }}" required>
+                                        @error('email')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                        <div class="alert alert-warning mt-3">
+                                            Email Anda belum dikonfirmasi. Silakan periksa kotak masuk Anda.<br>
+                                            <a href="javascript:void(0)">Kirim ulang konfirmasi</a>
+                                        </div>
+                                    </div>
 
-                                    @error('type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                    <!-- Alamat -->
+                                    <div class="form-group">
+                                        <label class="form-label">Alamat</label>
+                                        <input type="text" name="address" class="form-control mb-1" value="{{ old('addres', $profile->addres ?? '') }}">
+                                        @error('address')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Telepon -->
+                                    <div class="form-group">
+                                        <label class="form-label">Telepon</label>
+                                        <input type="text" name="phone" class="form-control mb-1" value="{{ old('phone', $profile->phone ?? '') }}">
+                                        @error('phone')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                </form>
                             </div>
+                        </div>
 
-                            <div class="form-group row">
-                                <label for="phone" class="col-md-4 col-form-label text-md-right">Phone</label>
-
-                                <div class="col-md-6">
-                                    <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ $userProfile->phone }}" autocomplete="phone" autofocus>
-
-                                    @error('phone')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                        <div class="tab-pane fade" id="account-change-password">
+                            <div class="card-body pb-2">
+                                <!-- //ganti password -->
+                                <form method="POST" action="{{ route('user.profile.password') }}">
+                                    @csrf
+                                    @method('POST')
+                                    <div class="form-group">
+                                        <label class="form-label">Kata Sandi Saat Ini</label>
+                                        <input type="password" name="current_password" class="form-control">
+                                        @error('current_password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Kata Sandi Baru</label>
+                                        <input type="password" name="new_password" class="form-control">
+                                        @error('new_password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Ulangi Kata Sandi Baru</label>
+                                        <input type="password" name="new_password_confirmation" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Ganti Kata Sandi</button>
+                                </form>
                             </div>
+                        </div>
 
-                            <div class="form-group row">
-                                <label for="photo" class="col-md-4 col-form-label text-md-right">Photo</label>
+                        <!-- Bagian Tab Lainnya (Info, Sosial Media, Koneksi, dll.) -->
 
-                                <div class="col-md-6">
-                                    <input id="photo" type="file" class="form-control @error('photo') is-invalid @enderror" name="photo" autocomplete="photo" autofocus>
-
-                                    @error('photo')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        Update Profile
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

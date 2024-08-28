@@ -15,7 +15,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $user = $request->user();
-        $profile = $user->profile; // Pastikan model User memiliki relasi profile
+        $profile = $user->profile; 
 
         return view('profile.edit', [
             'user' => $user,

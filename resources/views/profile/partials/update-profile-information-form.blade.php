@@ -15,7 +15,7 @@
         <div class="mb-4">
             <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Name') }}</label>
             <div class="mt-1">
-                <input id="name" name="name" type="text" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                <input id="name" name="name" type="text" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" :value="old('name', $name->name)" required autofocus autocomplete="name" />
                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="mb-4">
             <label for="email" class="block text-sm font-medium text-gray-700">{{ __('Email') }}</label>
             <div class="mt-1">
-                <input id="email" name="email" type="email" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" :value="old('email', $user->email)" required autocomplete="username" />
+                <input id="email" name="email" type="email" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" :value="old('email', $user->email)" required autocomplete="email" />
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
                 @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -32,7 +32,7 @@
                         <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">{{ __('Click here to re-send the verification email.') }}</button>
                     </div>
 
-                    @if (session('status') === 'verification-link-sent')
+                    @if (session('status') === 'Resend Verification Email')
                         <p class="mt-2 font-medium text-sm text-green-600">{{ __('A new verification link has been sent to your email address.') }}</p>
                     @endif
                 @endif

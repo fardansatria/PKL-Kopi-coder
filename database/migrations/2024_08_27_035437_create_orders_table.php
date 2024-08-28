@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('addres')->nullable();
+            $table->string('status')->default('pending');
+            $table->decimal('total', 15, 2);
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('product_id');
-            $table->string('status')->default('in progress');
+            $table->string('payment_method')->nullable();
+
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade');
-            
             $table->timestamps();
         });
     }

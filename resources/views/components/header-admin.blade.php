@@ -3,7 +3,7 @@
   <div class="d-flex align-items-center justify-content-between">
     <a href="index.html" class="logo d-flex align-items-center">
       <img src="admin/assets/img/logo.png" alt="">
-      <span class="d-none d-lg-block">NiceAdmin</span>
+      <span class="d-none d-lg-block">CoderAdmin</span>
     </a>
     <i class="bi bi-list toggle-sidebar-btn"></i>
   </div><!-- End Logo -->
@@ -46,7 +46,7 @@
       <li class="nav-item">
             <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-flex align-items-center">
                 @csrf
-                <a class="nav-link d-flex align-items-center" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a class="nav-link d-flex align-items-center pe-4" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="bi bi-box-arrow-right"></i>
                     <span class="d-none d-md-block ps-2">Sign Out</span>
                 </a>

@@ -54,7 +54,7 @@ class HomeController extends Controller
         }
         return view('user.product_detail', compact('data', 'count'));
     }
-    public function add_cart($id)
+    public function add_cart(Request $request, $id)
     {
         $product_id = $id;
         $user = Auth::user();
@@ -62,9 +62,24 @@ class HomeController extends Controller
         $data = new Cart;
         $data->user_id = $user_id;
         $data->product_id = $product_id;
-        $data->save();
+        $qty = $request->input('qty', 1);
 
-        return redirect()->back()->with(['success' => 'Produk Berhasil ditambahkan ke keranjang!']);
+        $existingCart = Cart::where('user_id', $user_id)->where('product_id', $product_id)->first();
+
+        if ($existingCart) {
+            
+            $existingCart->qty += $qty;
+            $existingCart->save();
+        } else {
+            
+            $data = new Cart;
+            $data->user_id = $user_id;
+            $data->product_id = $product_id;
+            $data->qty = $qty;
+            $data->save();
+        }
+
+        return redirect()->back()->with('success', 'Produk Berhasil ditambahkan ke keranjang!');
     }
 
     public function mycart()
@@ -72,33 +87,25 @@ class HomeController extends Controller
         if (Auth::id()) {
             $user = Auth::user();
             $userid = $user->id;
+            $value = 0;
             $count = Cart::where('user_id', $userid)->count();
             $cart = Cart::where('user_id', $userid)->get();
+
+           
         }
         return view('user.mycart', compact('count', 'cart'));
     }
 
-    public function confirm_order(Request $request)
+    public function cart_delete($id)
     {
-        $name = $request->name;
-        $addres = $request->addres;
-        $phone = $request->phone;
+        $cart = Cart::findOrFail($id);
 
-        $userid = Auth::user()->id;
-        $cart = Cart::where('user_id', $userid)->get();
-
-        foreach($cart as $carts)
-        {
-            $order = new Order;
-
-            $order->name = $name;
-            $order->addres = $addres;
-            $order->phone = $phone;
-            $order->user_id = $userid;
-            $order->product_id = $carts->product_id;
-            $order->save();
-
+        if ($cart) {
+            $cart->delete();
+            return redirect('mycart')->with( 'success' , 'produk berhasil di hapus ');
+        } else {
+            return redirect('mycart')->with( 'error' , 'produk tidak di temukan');
         }
-        return redirect()->back();
     }
+
 }
