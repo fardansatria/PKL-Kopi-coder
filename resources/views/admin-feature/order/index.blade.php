@@ -28,6 +28,14 @@
 
     <!-- Template Main CSS File -->
     <link href="admin/assets/css/style.css" rel="stylesheet">
+
+    <style>
+        .button-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Menyesuaikan jumlah tombol per baris */
+        gap: 10px; /* Jarak antar tombol */
+    }
+    </style>
 </head>
 
 <body>
@@ -79,9 +87,9 @@
                                             <div>
                                                 <img src="{{ asset('storage/products/' . $item->product->image) }}" style="width: 50px; height: 50px;">
                                             </div>
-                                            <td>{{$item->product->title}}</td>
-                                            <td>{{$item->qty}}</td>
-                                            @endforeach
+                                        <td>{{$item->product->title}}</td>
+                                        <td>{{$item->qty}}</td>
+                                        @endforeach
                                         </td>
                                         <td>{{ $order->phone }}</td>
                                         <td>{{ $order->addres }}</td>
@@ -89,10 +97,20 @@
                                         <td>{{ number_format( $order->total, 0, ',', '.' ) }}</td>
                                         <td>{{ $order->payment_method }}</td>
                                         <td>
+                                            <form id="status-form-{{ $order->id }}" action="{{ route('order.statusUpdate', $order->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" id="status-input-{{ $order->id }}">
+                                            </form>
+                                            <div class="button-group">
+                                                <button type="button" class="btn btn-warning btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'shipped')">shipped</button>
+                                                <button type="button" class="btn btn-success btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'completed')">completed</button>
+                                                <a href="{{route('order.show', $order->id)}}" class="btn btn-primary">Show</a>
+                                            </div>
 
-                                            <a href="{{route('order.show', $order->id)}}" class="btn btn-primary">Show</a>
                                         </td>
                                     </tr>
+
                                     @empty
                                     <tr>
                                         <td colspan="4" class="text-center">Belum Ada Order</td>
@@ -124,6 +142,44 @@
     <script src="admin/assets/js/main.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmUpdateStatus(orderId, status) {
+            swal.fire({
+                title: 'apakah kamu yakin?',
+                text: 'kamu akan mengubah status menjadi ' + status + '.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButton: '#3085d6',
+                cancelButton: '#d33',
+                confirmButtonText: 'YA',
+                cancelButtonText: 'Tidak',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('status-input-' + orderId).value = status
+                    document.getElementById('status-form-' + orderId).submit()
+                }
+            })
+        }
+
+        @if(session('success'))
+        Swal.fire({
+            icon: "success",
+            title: "BERHASIL",
+            text: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 2000
+        });
+        @elseif(session('error'))
+        Swal.fire({
+            icon: "error",
+            title: "GAGAL!",
+            text: "{{ session('error') }}",
+            showConfirmButton: false,
+            timer: 2000
+        });
+        @endif
+    </script>
 
 </body>
 

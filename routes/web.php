@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     //order di admin
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');
+    Route::patch('/orders/{id}/update-status', [OrderController::class, 'statusUpdate'])->name('order.statusUpdate');
 
     // Rute untuk filter produk
     Route::get('dashboard/products/filter', [ProductController::class, 'filter'])->name('products.filter');

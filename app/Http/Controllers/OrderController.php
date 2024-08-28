@@ -19,4 +19,13 @@ class OrderController extends Controller
 
         return view('admin-feature.order.show', compact('orders'));
     }
+
+    public function statusUpdate(Request $request, $id)
+    {
+        $orders = Order::findOrFail($id);
+        $orders->status =$request->input('status');
+        $orders->save();
+
+        return redirect()->route('order.index')->with(['success' => 'Status telah di update!']);
+    }
 }
