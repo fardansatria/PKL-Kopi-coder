@@ -36,11 +36,11 @@
 
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Edit Slider</h1>
+            <h1>Buat Slider</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/index">Home</a></li>
-                    <li class="breadcrumb-item active">Edit Slider</li>
+                    <li class="breadcrumb-item active">Buat Slider</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->

@@ -30,51 +30,51 @@ class ProfileUserController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $user = $request->user();
-        $user->fill($request->validated());
+{
+    $user = $request->user();
+    $user->fill($request->validated());
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        $profileData = [
-            'addres' => $request->input('address'),
-            'phone' => $request->input('phone'),
-        ];
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = $image->hashName();
-
-            $image->storeAs('public/profile_photos', $imageName);
-
-            $profile = $user->profile;
-            if ($profile && $profile->photo) {
-                $oldPhotoPath = 'public/profile_photos/' . $profile->photo;
-
-                if (Storage::exists($oldPhotoPath)) {
-                    Storage::delete($oldPhotoPath);
-                    Log::info('Deleted old profile photo: ' . $profile->photo);
-                } else {
-                    Log::warning('Old profile photo not found: ' . $profile->photo);
-                }
-            }
-
-
-            $profileData['photo'] = $imageName;
-        }
-
-
-        $user->profile()->updateOrCreate(
-            ['user_id' => $user->id],
-            $profileData
-        );
-
-        return Redirect::route('dashboard')->with('status', 'profile-updated');
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
     }
+
+    $user->save();
+
+    $profileData = [
+        'addres' => $request->input('addres'),
+        'phone' => $request->input('phone'),
+    ];
+
+    // Cek jika ada file yang diunggah
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+        // Simpan file ke penyimpanan
+        $image->storeAs('public/profile_photos', $imageName);
+
+        // Hapus foto lama jika ada
+        $profile = $user->profile;
+        if ($profile && $profile->photo) {
+            $oldPhotoPath = 'public/profile_photos/' . $profile->photo;
+
+            if (Storage::exists($oldPhotoPath)) {
+                Storage::delete($oldPhotoPath);
+            }
+        }
+
+        $profileData['photo'] = $imageName;
+    }
+
+    // Update atau buat profil
+    $user->profile()->updateOrCreate(
+        ['user_id' => $user->id],
+        $profileData
+    );
+
+    return Redirect()->route('dashboard')->with(['success' => 'Profile telah di update']);
+}
+
 
 
 
@@ -112,6 +112,6 @@ class ProfileUserController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('dashboard')->with('status', 'password-updated');
+        return redirect()->route('dashboard')->with(['success' => 'password telah di update']);
     }
 }

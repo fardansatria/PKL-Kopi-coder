@@ -5,12 +5,12 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .carousel-item img {
-            max-height: 300px; /* Atur tinggi maksimum gambar */
-            width: 75%; /* Atur lebar otomatis */
-            margin: 0 auto; /* Tengah-tengahkan gambar */
-            margin-top: 28px;
-            border-radius: 20px;
-        }
+            max-height: 410px; 
+            width: 100%; 
+            margin: 0 auto; 
+            margin-top: 0px;
+            border-radius: 0px;
+        } 
     </style>
 </head>
 <body>
@@ -22,12 +22,14 @@
             </div>
         @endforeach
     </div>
-    <a class="carousel-control-prev" href="#headerCarousel" role="button" data-slide="prev">
+    <div class="slide">
+    <a class="carousel-control-prev visibility-hidden" href="#headerCarousel" role="button" data-slide="prev">
         <span class="sr-only">Previous</span>
     </a>
-    <a class="carousel-control-next" href="#headerCarousel" role="button" data-slide="next">
+    <a class="carousel-control-next  visibility-hidden" href="#headerCarousel" role="button" data-slide="next">
         <span class="sr-only">Next</span>
     </a>
+    </div>
 </div>
 
 <div id="eventCarousel" class="carousel slide mt-5" data-ride="carousel">
@@ -38,14 +40,16 @@
             </div>
         @endforeach
     </div>
-    <a class="carousel-control-prev" href="#eventCarousel" role="button" data-slide="prev">
+    <div class="slide">
+    <a class="carousel-control-prev  visibility-hidden d-none" href="#eventCarousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
     </a>
-    <a class="carousel-control-next" href="#eventCarousel" role="button" data-slide="next">
+    <a class="carousel-control-next  visibility-hidden d-none" href="#eventCarousel" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
     </a>
+    </div>
 </div>
 
 

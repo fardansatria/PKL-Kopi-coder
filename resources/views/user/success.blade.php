@@ -11,18 +11,33 @@
 <body>
     <div class="container mt-5 text-center">
         <h2>Terima Kasih!</h2>
-        <p>Pesanan Anda telah berhasil diproses.</p>
-
-        @if(session('bankDetails'))
-        <h3>Silahkan Transfer Ke Rekening Berikut</h3>
-        <p>Bank : {{ session('bankDetails')['bank_name'] }}</p>
-        <p>Nomor Rekening : {{ session('bankDetails')['bank_number'] }}</p>
-        <p>Nama Pemilik Rekening : {{ session('bankDetails')['bank_username'] }}</p>
-        @endif
-
+        <p>Pesanan Anda Akan di proses ketika anda menyelesaikan pembayaran.</p>
+        <button type="button" class="btn btn-primary" id="pay-button">Bayar</button>
         <a href="{{ url('/dashboard') }}" class="btn btn-primary">Kembali ke Beranda</a>
+        <a href="{{ route('user.order') }}" class="btn btn-primary">Halaman Order</a>
     </div>
 
 </body>
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{env('MIDTRANS_CLIENT_KEY')}}"></script>
+
+<script type="text/javascript">
+      document.getElementById('pay-button').onclick = function(){
+        // SnapToken acquired from previous step
+        snap.pay('{{ $order->snap_token }}', {  
+          // Optional
+          onSuccess: function(result){
+            /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+          },
+          // Optional
+          onPending: function(result){
+            /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+          },
+          // Optional
+          onError: function(result){
+            /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+          }
+        });
+      };
+    </script>
 
 </html>

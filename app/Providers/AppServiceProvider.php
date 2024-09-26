@@ -3,32 +3,47 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-<<<<<<< HEAD
+     /**
+      * Register any application services.
 =======
-     *
-     * @return void
->>>>>>> 5c32dd7 (second commit)
-     */
-    public function register(): void
-    {
-        //
-    }
+      *
+      * @return void
 
-    /**
-     * Bootstrap any application services.
-<<<<<<< HEAD
+      */
+     public function register(): void
+     {
+          //
+     }
+
+     /**
+      * Bootstrap any application services.
+
 =======
-     *
-     * @return void
->>>>>>> 5c32dd7 (second commit)
-     */
-    public function boot(): void
-    {
-        //
-    }
+      *
+      * @return void
+
+      */
+     public function boot(): void
+     {
+          $this->app->booted(function () {
+               $this->schedule();
+          });
+     }
+
+     protected function schedule()
+     {
+          $schedule = $this->app->make(Schedule::class);
+
+          $schedule->call(function () {
+               $orders = \App\Models\Order::where('status', 'pending')->get();
+
+               foreach ($orders as $order) {
+                    \App\Models\Order::checkPaymentStatus($order->id);
+               }
+          })->everyFiveMinutes(); // Atur interval sesuai kebutuhan
+     }
 }

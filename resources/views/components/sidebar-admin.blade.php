@@ -32,6 +32,11 @@
               <i class="bi bi-circle"></i><span>Add Product</span>
             </a>
           </li>
+          <li>
+            <a href="{{ route('product.sold') }}">
+              <i class="bi bi-circle"></i><span>Produk Sold</span>
+            </a>
+          </li>
         </ul>
       </li><!-- End Forms Nav -->
 
@@ -43,11 +48,6 @@
           <li>
             <a href="/sliders">
               <i class="bi bi-circle"></i><span>Slider</span>
-            </a>
-          </li>
-          <li>
-            <a href="tables-data.html">
-              <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
           </li>
         </ul>
@@ -64,12 +64,12 @@
             </a>
           </li>
           <li>
-            <a href="#">
-              <i class="bi bi-circle"></i><span>Pengembalian</span>
+            <a href="{{ route('order.admin-cancel') }}">
+              <i class="bi bi-circle"></i><span>Order Cancel</span>
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="{{ route('order.admin-completed') }}">
               <i class="bi bi-circle"></i><span>Order Success</span>
             </a>
           </li>

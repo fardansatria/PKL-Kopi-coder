@@ -31,17 +31,16 @@
 
     <style>
         .button-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Menyesuaikan jumlah tombol per baris */
-        gap: 10px; /* Jarak antar tombol */
-    }
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
     </style>
 </head>
 
 <body>
 
     <x-header-admin></x-header-admin>
-
     <x-sidebar-admin></x-sidebar-admin>
 
     <main id="main" class="main">
@@ -53,28 +52,47 @@
                     <li class="breadcrumb-item active">Order</li>
                 </ol>
             </nav>
-        </div><!-- End Page Title -->
+        </div>
 
         <section class="section dashboard">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
+                            {{-- Form Filter --}}
+                            <form action="{{ route('order.index') }}" method="GET">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="status">Status:</label>
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="">All</option>
+                                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                            <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : '' }}>canceled</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mt-4">
+                                        <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                                    </div>
+                                </div>
+                            </form>
 
-                            <table class="table table-bordered">
+                            {{-- Tabel Order --}}
+                            <table class="table table-bordered mt-4">
                                 <thead>
                                     <tr class="text-center">
                                         <th scope="col">Order ID</th>
                                         <th scope="col">User Name</th>
-                                        <th scope="col">Product image</th>
-                                        <th scope="col">nama product</th>
-                                        <th scope="col">quantity</th>
+                                        <th scope="col">Product Image</th>
+                                        <th scope="col">Nama Product</th>
+                                        <th scope="col">Quantity</th>
                                         <th scope="col">Nomor HP</th>
                                         <th scope="col">Alamat</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Total</th>
                                         <th scope="col">Metode Pembayaran</th>
-                                        <th scope="col" style="width: 20%">ACTIONS</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col" style="width: 20%">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,15 +105,29 @@
                                             <div>
                                                 <img src="{{ asset('storage/products/' . $item->product->image) }}" style="width: 50px; height: 50px;">
                                             </div>
-                                        <td>{{$item->product->title}}</td>
-                                        <td>{{$item->qty}}</td>
-                                        @endforeach
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($order->items as $item)
+                                            {{ $item->product->title }}<br>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($order->items as $item)
+                                            {{ $item->qty }}<br>
+                                            @endforeach
                                         </td>
                                         <td>{{ $order->phone }}</td>
                                         <td>{{ $order->addres }}</td>
-                                        <td>{{ $order->status }}</td>
-                                        <td>{{ number_format( $order->total, 0, ',', '.' ) }}</td>
-                                        <td>{{ $order->payment_method }}</td>
+                                        <td>
+                                            @if ($order->status == 'canceled' && $order->cancel_product)
+                                            {{ $order->status }} - {{ $order->cancel_product }}
+                                            @else
+                                            {{ $order->status }}
+                                            @endif
+                                        </td>
+                                        <td>{{ $order->payment_method ?? 'Midtrans'}}</td>
+                                        <td>{{ number_format($order->total, 0, ',', '.') }}</td>
                                         <td>
                                             <form id="status-form-{{ $order->id }}" action="{{ route('order.statusUpdate', $order->id) }}" method="POST" style="display:inline;">
                                                 @csrf
@@ -103,22 +135,20 @@
                                                 <input type="hidden" name="status" id="status-input-{{ $order->id }}">
                                             </form>
                                             <div class="button-group">
-                                                <button type="button" class="btn btn-warning btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'shipped')">shipped</button>
-                                                <button type="button" class="btn btn-success btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'completed')">completed</button>
-                                                <a href="{{route('order.show', $order->id)}}" class="btn btn-primary">Show</a>
+                                                <button type="button" class="btn btn-warning btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'shipped')">Shipped</button>
+                                                <button type="button" class="btn btn-success btn-sm" onclick="confirmUpdateStatus('{{ $order->id }}', 'completed')">Completed</button>
+                                                <a href="{{ route('order.show', $order->id) }}" class="btn btn-primary">Show</a>
+                                                <a href="{{ url('print_pdf', $order->id) }}" class="btn btn-info">Print PDF</a>
                                             </div>
-
                                         </td>
                                     </tr>
-
                                     @empty
                                     <tr>
-                                        <td colspan="4" class="text-center">Belum Ada Order</td>
+                                        <td colspan="11" class="text-center">Belum Ada Order</td>
                                     </tr>
                                     @endforelse
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -145,23 +175,28 @@
 
     <script>
         function confirmUpdateStatus(orderId, status) {
-            swal.fire({
-                title: 'apakah kamu yakin?',
-                text: 'kamu akan mengubah status menjadi ' + status + '.',
+            Swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: 'Kamu akan mengubah status menjadi ' + status + '.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButton: '#3085d6',
-                cancelButton: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
                 confirmButtonText: 'YA',
                 cancelButtonText: 'Tidak',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('status-input-' + orderId).value = status
-                    document.getElementById('status-form-' + orderId).submit()
+                    document.getElementById('status-input-' + orderId).value = status;
+                    document.getElementById('status-form-' + orderId).submit();
                 }
-            })
+            });
         }
+    </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Message with Sweetalert
         @if(session('success'))
         Swal.fire({
             icon: "success",
@@ -180,7 +215,6 @@
         });
         @endif
     </script>
-
 </body>
 
 </html>

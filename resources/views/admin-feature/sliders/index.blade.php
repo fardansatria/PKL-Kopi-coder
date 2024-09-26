@@ -9,6 +9,10 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+      <!-- link font awesome -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
     <!-- Favicons -->
     <link href="{{ asset('admin/assets/img/favicon.png') }}" rel="icon">
     <link href="{{ asset('admin/assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -89,12 +93,15 @@
                                         <td>{{ ucfirst($slider->type) }}</td>
                                         <td class="text-center">
                                             <div class="action-buttons">
-                                                <a href="{{ route('sliders.show', $slider->id) }}" class="btn btn-sm btn-dark">Show</a>
-                                                <a href="{{ route('sliders.edit', $slider->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                                <a href="{{ route('sliders.edit', $slider->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-pencil-alt"></i>
+                                                </a>
                                                 <form onsubmit="return confirm('Are you sure?');" action="{{ route('sliders.destroy', $slider->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger" style="cursor: pointer;">
+                                                    <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>
@@ -129,11 +136,15 @@
                                         <td>{{ ucfirst($slider->type) }}</td>
                                         <td class="text-center">
                                             <div class="action-buttons">
-                                                <a href="{{ route('sliders.edit', $slider->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                                <form onsubmit="return confirm('Are you sure?');" action="{{ route('sliders.destroy', $slider->id) }}" method="POST">
+                                                <a href="{{ route('sliders.edit', $slider->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-pencil-alt"></i>
+                                                </a>
+                                                <form onsubmit="return confirm('Apakah kamu yakin?');" action="{{ route('sliders.destroy', $slider->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger" style="cursor:pointer;">
+                                                    <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>

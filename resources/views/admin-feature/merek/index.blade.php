@@ -9,6 +9,9 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+    <!-- link font awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <!-- Favicons -->
     <link href="admin/assets/img/favicon.png" rel="icon">
     <link href="admin/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -72,10 +75,14 @@
                                         <td>{{ $merek->slug }}</td>
                                         <td class="text-center">
                                             <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('merek.destroy', $merek->id) }}" method="POST">
-                                                <a href="{{ route('merek.edit', $merek->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                                                <a href="{{ route('merek.edit', $merek->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-pencil-alt"></i>
+                                                </a>
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                                <button type="submit" class="btn btn-sm btn-danger" style="cursor: pointer;">
+                                                <i class="fa fa-trash"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>

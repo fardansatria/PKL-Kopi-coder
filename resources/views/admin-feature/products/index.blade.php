@@ -9,6 +9,10 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+    <!-- link font awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
     <!-- Favicons -->
     <link href="admin/assets/img/favicon.png" rel="icon">
     <link href="admin/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -32,8 +36,33 @@
     <style>
         .action-buttons {
             display: flex;
-            gap: 0.3rem;
+            gap: 2px;
             justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+
+        .btn-secondary i {
+            margin-right: 4px;
+        }
+
+        .pagination-btn {
+            padding: 6px 12px;
+            /* Mengatur padding lebih kecil */
+            font-size: 14px;
+            /* Menyesuaikan ukuran font */
+        }
+
+        .btn {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            color: white;
         }
     </style>
 </head>
@@ -61,6 +90,25 @@
                         <div class="card-body">
                             <a href="{{ route('products.create') }}" class="btn btn-md btn-success mb-3">ADD PRODUCT</a>
                             <table class="table table-bordered">
+                                <!-- filter merek -->
+                                <form method="GET" action="{{ route('products.index') }}" class="mb-3">
+                                    <div class="form-row align-items-end">
+                                        <div class="col-auto">
+                                            <label for="merek_id" class="sr-only">Pilih Merek</label>
+                                            <select name="merek_id" id="merek_id" class="form-control" onchange="this.form.submit()">
+                                                <option value="">Semua Merek</option>
+                                                @foreach ($mereks as $merek)
+                                                <option value="{{ $merek->id }}" {{ request('merek_id') == $merek->id ? 'selected' : '' }}>
+                                                    {{ $merek->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>    
+                                    </div>
+                                </form>
+                                <!-- end filter merek -->
+
+                                <!-- table produk -->
                                 <thead>
                                     <tr>
                                         <th scope="col">IMAGE</th>
@@ -78,20 +126,32 @@
                                             <img src="{{ asset('/storage/products/'.$product->image) }}" class="img-fluid rounded" style="max-width: 150px">
                                         </td>
                                         <td>{{ $product->title }}</td>
-                                        <td>{{ "Rp " . number_format($product->price, 2, ',', '.') }}</td>
+                                        <td>{{ "Rp " . number_format($product->price, 0, ',', '.') }}</td>
                                         <td>{{ $product->stock }}</td>
                                         <td>{{ optional($product->merek)->name }}</td>
                                         <td class="text-center">
                                             <div class="action-buttons">
-                                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-dark">SHOW</a>
-                                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-primary">EDIT</a>
-                                                <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('products.destroy', $product->id) }}" method="POST">
+                                                <!-- ikon show -->
+                                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-dark" title="Lihat Produk">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+
+                                                <!-- ikon edit -->
+                                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-primary" title="Edit Produk">
+                                                    <i class="fa fa-pencil-alt"></i>
+                                                </a>
+
+                                                <!-- ikon hapus -->
+                                                <form onsubmit="return confirm('Apakah Anda Yakin Untuk menghapus produk ini?');" action="{{ route('products.destroy', $product->id) }}" method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus Produk" style="cursor: pointer;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>
+
                                     </tr>
                                     @empty
                                     <tr>
@@ -103,12 +163,37 @@
                                     </tr>
                                     @endforelse
                                 </tbody>
+                                <!-- end table produk -->
                             </table>
-                            {{ $products->links() }}
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="d-flex justify-content-center mt-3">
+                @if ($products->onFirstPage())
+                <span class="btn btn-secondary pagination-btn disabled">
+                    <i class="fa fa-arrow-left"></i> Previous
+                </span>
+                @else
+                <a href="{{ $products->previousPageUrl() }}" class="btn btn-secondary pagination-btn">
+                    <i class="fa fa-arrow-left"></i> Previous
+                </a>
+                @endif
+
+                <span class="mx-3 my-auto">Page {{ $products->currentPage() }} of {{ $products->lastPage() }}</span>
+
+                @if ($products->hasMorePages())
+                <a href="{{ $products->nextPageUrl() }}" class="btn btn-secondary pagination-btn">
+                    Next <i class="fa fa-arrow-right"></i>
+                </a>
+                @else
+                <span class="btn btn-secondary pagination-btn disabled">
+                    Next <i class="fa fa-arrow-right"></i>
+                </span>
+                @endif
+            </div>
+
+
         </section>
     </main>
 

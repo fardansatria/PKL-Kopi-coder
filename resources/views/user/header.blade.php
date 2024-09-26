@@ -185,6 +185,11 @@
                         </a>
                     </li>
                     <li>
+                        <a class="dropdown-item" href="{{ route('user.order') }}">
+                            <i class="bi bi-gear"></i> Orders
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="#">
                             <i class="bi bi-gear"></i> Settings
                         </a>

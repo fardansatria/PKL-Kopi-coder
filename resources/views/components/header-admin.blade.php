@@ -9,18 +9,21 @@
   </div><!-- End Logo -->
 
   <div class="search-bar">
-    <form class="search-form d-flex align-items-center" method="POST" action="#">
-      <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+    <form class="search-form d-flex align-items-center" method="GET" action="{{ route('admin.search') }}">
+      <input type="text" name="search" id="searchInput" placeholder="Search" title="Enter search keyword">
       <button type="submit" title="Search"><i class="bi bi-search"></i></button>
     </form>
-  </div><!-- End Search Bar -->
+    <div id="searchResults" style="position: absolute; background-color: white; border: 1px solid #ccc; width: 300px; max-height: 300px; overflow-y: auto; display: none;">
+    </div>
+  </div>
+  <!-- End Search Bar -->
 
   <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
       <li class="nav-item dropdown pe-3">
 
         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-          <img src="admin/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+          <img src="{{ asset('/storage/web_image/coder.jpg') }}" alt="Profile" class="rounded-circle">
           <span class="d-none d-md-block dropdown-toggle ps-2"> {{Auth::user()->name}} </span>
         </a><!-- End Profile Iamge Icon -->
 
@@ -44,16 +47,46 @@
       </li><!-- End Profile Nav -->
 
       <li class="nav-item">
-            <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-flex align-items-center">
-                @csrf
-                <a class="nav-link d-flex align-items-center pe-4" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-md-block ps-2">Sign Out</span>
-                </a>
-            </form>
-        </li>
+        <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-flex align-items-center">
+          @csrf
+          <a class="nav-link d-flex align-items-center pe-4" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="d-none d-md-block ps-2">Sign Out</span>
+          </a>
+        </form>
+      </li>
 
     </ul>
   </nav><!-- End Icons Navigation -->
-
 </header><!-- End Header -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#searchInput').on('keyup', function() {
+      let searchQuery = $(this).val();
+
+      if (searchQuery.length > 0) {
+        $.ajax({
+          url: "{{ route('admin.search') }}", // URL untuk pencarian
+          method: 'GET',
+          data: {
+            search: searchQuery
+          },
+          success: function(response) {
+            $('#searchResults').html(response).show(); // Tampilkan hasil pencarian
+          }
+        });
+      } else {
+        $('#searchResults').hide(); // Sembunyikan popup jika input kosong
+      }
+    });
+
+    // Sembunyikan hasil pencarian jika klik di luar
+    $(document).click(function(e) {
+      if (!$(e.target).closest('#searchInput, #searchResults').length) {
+        $('#searchResults').hide();
+      }
+    });
+  });
+</script>

@@ -16,6 +16,8 @@ class product extends Model
         'stock',
         'image',
         'merek_id',
+        'sold',
+        'weight',
     ];
 
     public function merek()
@@ -32,4 +34,9 @@ class product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function carts()
+{
+    return $this->hasMany('App\Models\Cart', 'product_id');
+}
 }

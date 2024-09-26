@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('addres')->nullable();
-            $table->enum('type', ['laki_laki', 'perempuan']);
             $table->string('phone')->nullable();
             $table->string('photo')->nullable();
+            $table->string('province_id')->nullable(); 
+            $table->string('city_id')->nullable(); 
             $table->timestamps();
         });
     }

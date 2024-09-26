@@ -13,7 +13,8 @@ class UserProfile extends Model
         'addres',
         'phone',
         'photo',
-        'type'
+        'province_id', 
+        'city_id'
     ];
 
 

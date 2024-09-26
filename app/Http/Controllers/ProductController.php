@@ -10,40 +10,21 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class ProductController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $products = Product::latest()->paginate(10);
-        $mereks = Merek::all();
-        return view('admin-feature.products.index', compact('products', 'mereks')); 
-    }
+        $query = Product::latest(); // Memulai query untuk produk
 
-    public function filter(Request $request): View
-    {
-        $title = $request->input('title');
-        $merek_id = $request->input('merek_id');
-        $min_price = $request->input('min_price');
-        $max_price = $request->input('max_price');
-
-        $query = Product::query();
-
-        if ($title) {
-            $query->where('title', 'like', '%' . $title . '%');
-        }
-        if ($merek_id) {
-            $query->where('merek_id', $merek_id);
-        }
-        if ($min_price) {
-            $query->where('price', '>=', $min_price);
-        }
-        if ($max_price) {
-            $query->where('price', '<=', $max_price);
+        // Memeriksa apakah ada filter merek
+        if ($request->has('merek_id') && $request->merek_id != '') {
+            $query->where('merek_id', $request->merek_id); // Menambahkan kondisi filter
         }
 
-        $products = $query->latest()->paginate(10);
-        $mereks = Merek::all(); // Ambil semua mereks untuk filter
+        $products = $query->paginate(10); // Melakukan paginasi
+        $mereks = Merek::all(); // Mengambil semua merek untuk dropdown
         return view('admin-feature.products.index', compact('products', 'mereks'));
     }
 
@@ -63,36 +44,71 @@ class ProductController extends Controller
             'description' => 'required|min:10',
             'price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'merek_id' => 'required|exists:mereks,id'
+            'merek_id' => 'required|exists:mereks,id',
+            'weight' => 'required|numeric',
         ]);
 
-        // Upload image
+        // Upload dan Resize gambar utama
         $image = $request->file('image');
-        $image->storeAs('public/products', $image->hashName());
+        $imageName = $image->hashName();
+        $image->storeAs('public/products', $imageName);
 
-        // Create product
+        $resizeSuccess = ImageHelper::resizeImage(
+            storage_path('app/public/products/' . $imageName),
+            storage_path('app/public/products/resized_' . $imageName),
+            200,
+            200
+        );
+
+        storage::delete('public/products/' . $imageName);
+
+        if (!$resizeSuccess) {
+            Log::error('Failed to resize main image: ' . $imageName);
+            return redirect()->back()->withErrors(['error' => 'Gagal meresize gambar utama.']);
+        }
+
+        // Simpan data produk
         $product = Product::create([
-            'image' => $image->hashName(),
+            'image' => 'resized_' . $imageName,
             'title' => $request->title,
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
-            'merek_id' => $request->merek_id
+            'merek_id' => $request->merek_id,
+            'weight' => $request->weight,
         ]);
 
-        // Periksa image tambahan apakah di upload
+        // Proses gambar tambahan
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $file->storeAs('public/products', $file->hashName());
+                $fileName = $file->hashName();
+                $file->storeAs('public/products', $fileName);
+
+                $resizeSuccess = ImageHelper::resizeImage(
+                    storage_path('app/public/products/' . $fileName),
+                    storage_path('app/public/products/resized_' . $fileName),
+                    200,
+                    200
+                );
+
+                Storage::delete('public/products/' . $fileName);
+
+                if (!$resizeSuccess) {
+                    Log::error('Failed to resize additional image: ' . $fileName);
+                    return redirect()->back()->withErrors(['error' => 'Gagal meresize gambar tambahan.']);
+                }
 
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => $file->hashName()
+                    'image' => 'resized_' . $fileName
                 ]);
             }
         }
+
         return redirect()->route('products.index')->with(['success' => 'Produk Berhasil Ditambahkan']);
     }
+
+
 
     public function show(string $id): View
     {
@@ -116,61 +132,91 @@ class ProductController extends Controller
             'description' => 'required|min:10',
             'price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'merek_id' => 'required|exists:mereks,id'
+            'merek_id' => 'required|exists:mereks,id',
+            'weight' => 'required|numeric',
         ]);
 
         $product = Product::with('productImages')->findOrFail($id);
 
-        // Update main image
+        // Update gambar utama jika ada
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $image->storeAs('public/products', $image->hashName());
+            $newImage = $request->file('image');
+            $newImageName = $newImage->hashName();
+            $newImage->storeAs('public/products', $newImageName);
 
-            if (Storage::exists('public/products/' . $product->image)) {
-                // Delete old main image
-                Storage::delete('public/products/' . $product->image);
-                Log::info('Deleted old main image: ' . $product->image);
-            } else {
-                Log::warning('Old main image not found: ' . $product->image);
+            $resizeSuccess = ImageHelper::resizeImage(
+                storage_path('app/public/products/' . $newImageName),
+                storage_path('app/public/products/resized_' . $newImageName),
+                200,
+                200
+            );
+
+            Storage::delete('public/products/' . $newImageName);
+
+            if (!$resizeSuccess) {
+                Log::error('Failed to resize main image: ' . $newImageName);
+                return redirect()->back()->withErrors(['error' => 'Gagal meresize gambar utama.']);
             }
 
-            $product->image = $image->hashName();
+            // Hapus gambar utama lama
+            if ($product->image && Storage::exists('public/products/' . $product->image)) {
+                Storage::delete('public/products/' . $product->image);
+                Log::info('Deleted old main image: ' . $product->image);
+            }
+
+            $product->image = 'resized_' . $newImageName;
         }
 
-        // Update product details
+        // Update detail produk
         $product->title = $request->title;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->stock = $request->stock;
         $product->merek_id = $request->merek_id;
+        $product->weight = $request->weight;
         $product->save();
 
-        // Update tambahan images
+        // Update gambar tambahan
         if ($request->hasFile('images')) {
+            // Hapus gambar tambahan lama
             foreach ($product->productImages as $productImage) {
                 if (Storage::exists('public/products/' . $productImage->image)) {
-                    // Delete old tambahan images
                     Storage::delete('public/products/' . $productImage->image);
                     Log::info('Deleted old additional image: ' . $productImage->image);
-                } else {
-                    Log::warning('Old additional image not found: ' . $productImage->image);
                 }
                 $productImage->delete();
             }
 
-            // Tambah image tambahan
+            // Simpan gambar tambahan baru
             foreach ($request->file('images') as $file) {
-                $file->storeAs('public/products', $file->hashName());
+                $fileName = $file->hashName();
+                $file->storeAs('public/products', $fileName);
+
+                $resizeSuccess = ImageHelper::resizeImage(
+                    storage_path('app/public/products/' . $fileName),
+                    storage_path('app/public/products/resized_' . $fileName),
+                    200,
+                    200
+                );
+
+                // Hapus gambar asli setelah resize
+                Storage::delete('public/products/' . $fileName);
+
+                if (!$resizeSuccess) {
+                    Log::error('Failed to resize additional image: ' . $fileName);
+                    return redirect()->back()->withErrors(['error' => 'Gagal meresize gambar tambahan.']);
+                }
 
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => $file->hashName()
+                    'image' => 'resized_'  . $fileName
                 ]);
             }
         }
 
         return redirect()->route('products.index')->with(['success' => 'Produk Berhasil diupdate']);
     }
+
 
     public function destroy(string $id): RedirectResponse
     {

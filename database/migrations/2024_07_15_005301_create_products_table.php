@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->foreignId('merek_id');
             $table->string('image');
+            $table->integer('sold')->default(0);
+            $table->integer('weight')->default(0);
             $table->timestamps();
         });
     }

@@ -7,50 +7,60 @@
     <title>Products</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'opensnas', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
 
         h1 {
-            text-align: center;
-            margin: 20px 0;
+            text-align: start;
+            margin: 0px 20px;
             font-size: 2rem;
-            color: #333;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            margin-left: 100px;
         }
 
         .product-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
             justify-content: center;
             margin: 0 auto;
-            max-width: 1200px;
+            max-width: 1300px;
             padding: 0 15px;
+            margin-bottom: 35px;
         }
 
         .product-card {
             position: relative;
             border: 1px solid #ddd;
-            border-radius: 10px;
-            width: 250px;
+            width: calc(17% - 25px);
             background-color: #fff;
+            border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            text-align: start;
+            height: auto;
+        }
+
+        .product-card a {
+            text-decoration: none;
         }
 
         .product-card:hover {
             transform: scale(1.03);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid #000;
         }
 
         .product-image {
-            width: 100%;
+            width: 200px;
             height: 200px;
             object-fit: cover;
         }
@@ -60,23 +70,19 @@
         }
 
         .product-title {
-            font-size: 1.125rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 500;
             margin: 0;
             color: #333;
         }
 
         .product-price {
-            color: #28a745;
-            font-size: 1rem;
+            color: #2596be;
+            font-size: 0.9rem;
+            font-weight: 600;
             margin: 10px 0;
         }
 
-        .product-description {
-            font-size: 0.875rem;
-            color: #555;
-            margin: 10px 0;
-        }
 
         .btn-cart-form {
             position: absolute;
@@ -113,20 +119,37 @@
         .btn-cart i {
             margin: 0;
         }
+
+        .product-rating {
+            margin-top: -15px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            font-size: 0.85rem;
+            color: #000;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Our Products</h1>
+    <h1>Products</h1>
     <div class="product-container">
         @foreach($products as $product)
         <div class="product-card">
             <a href="{{ url('product_detail', $product->id) }}">
                 <img src="{{ asset('/storage/products/' . $product->image) }}" alt="{{ $product->title }}" class="product-image">
                 <div class="product-info">
-                    <div class="product-title">{{ $product->title }}</div>
-                    <div class="product-price">RP {{ number_format( $product->price, 0, ',', '.' )}}</div>
-                    <div class="product-description">{{ Str::limit($product->description, 50) }}</div>
+                    <div class="product-title">{{ Str::limit($product->title, 20) }}</div>
+                    <div class="product-price">Rp{{ number_format( $product->price, 0, ',', '.' )}}</div>
+                </div>
+                <div class="product-rating">
+                    <span class="stars">★ </span> <!-- Example rating, you can use dynamic content here -->
+                    <span>4,5 | </span>
+                    <span>1 Terjual</span>
                 </div>
             </a>
             <form action="{{ url('add_cart', $product->id) }}" method="POST" class="btn-cart-form">

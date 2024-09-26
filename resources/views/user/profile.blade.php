@@ -29,28 +29,24 @@
                 <div class="col-md-9">
                     <div class="tab-content">
                         <div class="tab-pane fade active show" id="account-general">
-
-                            <!-- Profile Photo -->
-                            <div class="form-group">
-                                <label for="image">Profile Photo</label>
-                                <input type="file" name="image" class="form-control-file">
-                                @error('photo')
-                                <small class="text-danger">{{ $message }}</small>
-                                @enderror
-
-                                @if($profile && $profile->photo)
-                                <div class="mt-2">
-                                    <img src="{{ asset('storage/profile_photos/' . $profile->photo) }}" alt="Profile Photo" class="img-thumbnail" width="150">
-                                </div>
-                                @endif
-
-
-                            </div>
-                            <hr class="border-light m-0">
                             <div class="card-body">
-                                <form method="POST" action="{{ route('user.profile.edit') }}">
+                                <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data">
                                     @csrf
                                     @method('POST')
+
+                                    <div class="form-group">
+                                        <label for="image">Profile Photo</label>
+                                        <input type="file" name="image" class="form-control-file">
+                                        @error('image')
+                                        <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+
+                                        @if($profile && $profile->photo)
+                                        <div class="mt-2">
+                                            <img src="{{ asset('storage/profile_photos/' . $profile->photo) }}" alt="Profile Photo" class="img-thumbnail" width="150">
+                                        </div>
+                                        @endif
+                                    </div>
 
                                     <!-- Nama -->
                                     <div class="form-group">
@@ -77,8 +73,8 @@
                                     <!-- Alamat -->
                                     <div class="form-group">
                                         <label class="form-label">Alamat</label>
-                                        <input type="text" name="address" class="form-control mb-1" value="{{ old('addres', $profile->addres ?? '') }}">
-                                        @error('address')
+                                        <textarea name="addres" class="form-control mb-1" required>{{ old('addres', $profile->addres ?? '') }}</textarea>
+                                        @error('addres')
                                         <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
@@ -86,7 +82,7 @@
                                     <!-- Telepon -->
                                     <div class="form-group">
                                         <label class="form-label">Telepon</label>
-                                        <input type="text" name="phone" class="form-control mb-1" value="{{ old('phone', $profile->phone ?? '') }}">
+                                        <input type="text" name="phone" class="form-control mb-1" value="{{ old('phone', $profile->phone ?? '') }}" required>
                                         @error('phone')
                                         <small class="text-danger">{{ $message }}</small>
                                         @enderror
@@ -99,7 +95,7 @@
 
                         <div class="tab-pane fade" id="account-change-password">
                             <div class="card-body pb-2">
-                                <!-- //ganti password -->
+                                <!-- Ganti password -->
                                 <form method="POST" action="{{ route('user.profile.password') }}">
                                     @csrf
                                     @method('POST')
@@ -125,8 +121,6 @@
                                 </form>
                             </div>
                         </div>
-
-                        <!-- Bagian Tab Lainnya (Info, Sosial Media, Koneksi, dll.) -->
 
                     </div>
                 </div>
