@@ -2,8 +2,8 @@
 
 <style>
   footer {
-    background: #fff;
-    color: black;
+    background: #02133F;
+    color: white;
     padding: 30px;
     text-align: left;
   }

@@ -13,23 +13,30 @@ use Illuminate\Support\Facades\Http;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $profile = $user->profile;
-        $cartItems = Cart::where('user_id', $user->id)->get();
+        $qty = $request->input('qty', 1);
+        $usercart = Cart::where('user_id', $user->id)->get();;
         $response = Http::withHeaders([
             'key' => env('RAJAONGKIR_API_KEY'),
         ])->get('https://api.rajaongkir.com/starter/province');
 
         $provinces = $response->json()['rajaongkir']['results'];
 
+        foreach ($usercart as $cartItems) {
+            if ($cartItems->qty <= 0) {
+                return redirect()->back()->with(['error', 'Stok produk tidak mencukupi']);
+            }
+        }
+
         $totalWeight = 0;
         foreach ($cartItems as $item) {
             $product = Product::find($item->product_id);
             if ($product) {
                 $totalWeight += $product->weight * $item->qty;
-            }
+            }  
         }
 
 
@@ -42,8 +49,9 @@ class CheckoutController extends Controller
             'totalWeight' => $totalWeight,
         ]);
     }
-    public function store(Request $request)
+    public function store(Request $request, $product_idd)
     {
+
         // Validasi input
         $request->validate([
             'email' => 'required|email',
@@ -56,14 +64,10 @@ class CheckoutController extends Controller
 
         $cartItems = [];
 
-        if ($product_id) {
+        if ($product_idd) {
             $cartItems = Cart::where('user_id', Auth::id())
-                ->where('product_id', $product_id)
+                ->where('product_id', $product_idd)
                 ->get();
-
-            if ($cartItems) {
-                $cartItems[] = $cartItems;
-            }
         } else {
             $cartItems = Cart::where('user_id', Auth::id())->get();
         }
@@ -161,9 +165,10 @@ class CheckoutController extends Controller
             $snapToken = \Midtrans\Snap::getSnapToken($params);
             $order->snap_token = $snapToken;
             $order->save();
+            // $product_id = 13;
 
             // Hapus item dari keranjang setelah checkout berhasil
-            Cart::where('user_id', Auth::id())->delete();
+            Cart::where('user_id', Auth::id())->where('product_id', $product_idd)->delete();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage());
         }
@@ -175,6 +180,7 @@ class CheckoutController extends Controller
     public function checkoutFromProduct(Request $request, $product_id)
     {
         $product = Product::findOrFail($product_id);
+        // $cart = Cart::findOrFail($product_id);
         $user = Auth::user();
         $profile = $user->profile;
         $response = Http::withHeaders([

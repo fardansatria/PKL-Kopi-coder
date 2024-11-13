@@ -22,7 +22,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        $products = Product::limit(12)->get();
+        $products = Product::limit(20)->get();
         if (Auth::id()) {
             $user = Auth::user();
             $userid = $user->id;
@@ -30,21 +30,24 @@ class HomeController extends Controller
         } else {
             $count = '';
         }
+
+        $latestProducts = Product::orderBy('created_at', 'desc')->take(8)->get();
         $headerSliders = Slider::where('type', 'header')->get();
         $eventSliders = Slider::where('type', 'event')->get();
         $mereks = Merek::latest()->paginate(10);
-        return view('user.index', compact('products', 'headerSliders', 'eventSliders', 'count', 'mereks'));
+        return view('user.index', compact('products', 'latestProducts', 'headerSliders', 'eventSliders', 'count', 'mereks'));
     }
     public function home_login()
     {
-        $products = Product::limit(12)->get();
+        $products = Product::limit(20)->get();
+        $latestProducts = Product::orderBy('created_at', 'desc')->take(8)->get();
         $user = Auth::user();
         $userid = $user->id;
         $count = Cart::where('user_id', $userid)->count();
         $headerSliders = Slider::where('type', 'header')->get();
         $eventSliders = Slider::where('type', 'event')->get();
         $mereks = Merek::latest()->paginate(10);
-        return view('user.index', compact('products', 'headerSliders', 'eventSliders', 'count', 'mereks'));
+        return view('user.index', compact('products', 'latestProducts' , 'headerSliders', 'eventSliders', 'count', 'mereks'));
     }
 
     public function product_detail($id)

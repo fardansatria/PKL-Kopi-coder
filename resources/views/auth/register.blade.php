@@ -25,9 +25,9 @@
         background-color: #e5e7eb;
         padding: 40px;
         border-radius: 8px;
-        box-shadow: 15px 15px 25px 4px rgba(0,0,0,0.87);
-        webkit-box-shadow: 15px 15px 25px 4px rgba(0,0,0,0.87);
-        moz-box-shadow: 15px 15px 25px 4px rgba(0,0,0,0.87);
+        box-shadow: 15px 15px 25px 4px rgba(0, 0, 0, 0.87);
+        webkit-box-shadow: 15px 15px 25px 4px rgba(0, 0, 0, 0.87);
+        moz-box-shadow: 15px 15px 25px 4px rgba(0, 0, 0, 0.87);
         width: 25rem;
         max-width: 90%;
     }
@@ -69,7 +69,12 @@
     .back-home {
         display: flex;
         align-items: center;
-        margin-top: 16px;   
+        margin-top: 16px;
+    }
+    .note {
+        display: flex;
+        align-items: center;
+        margin-top: 1px;
     }
 
     .back-home a {
@@ -180,6 +185,9 @@
             <div class="back-home">
                 <a href="{{url('/')}}">Back Home</a>
             </div>
+            <div class="note">
+                <p>Note: Verifikasi email akan di kirimkan ke email yang diisi</p>
+            </div>
 
             <div class="form-footer">
                 <a class="link" href="{{ route('login') }}">
@@ -189,8 +197,6 @@
                 <button class="btn" type="submit">
                     {{ __('Register') }}
                 </button>
-
-
             </div>
         </form>
     </div>
@@ -203,10 +209,10 @@
 
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
-            toggleIcon.textContent = 'visibility_off'; // Ganti ikon menjadi mata tertutup
+            toggleIcon.textContent = 'visibility_off';
         } else {
             passwordInput.type = 'password';
-            toggleIcon.textContent = 'visibility'; // Ganti ikon menjadi mata terbuka
+            toggleIcon.textContent = 'visibility';
         }
     }
 </script>

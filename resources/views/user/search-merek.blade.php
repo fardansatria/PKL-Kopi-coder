@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'opensans', sans-serif;
-            background: linear-gradient(to left, #456494, #202D49, #1E3280, #000B71);
+            background: linear-gradient(to bottom, #001355, #0029BB);
             margin: 0;
             padding: 0;
         }
@@ -45,14 +45,14 @@
             object-fit: cover;
         }
 
-        .produck {
+        .product {
             display: flex;
             justify-content: center;
         }
 
         .product-container {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(5 ,1fr);
             gap: 10px;
             justify-content: space-between;
             margin: 0 auto;
@@ -63,15 +63,16 @@
 
         .product-card {
             position: relative;
-            border: 1px solid #ddd;
-            width: calc(17% - 25px);
-            background-color: #fff;
+            background: rgba(255, 255, 255, 0.76);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10.4px);
+            -webkit-backdrop-filter: blur(10.4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: start;
             height: auto;
-            flex: 1 1 200px;
         }
 
         .product-card a {
@@ -80,7 +81,8 @@
 
         .product-card:hover {
             transform: scale(1.03);
-            border: 1px solid #000;
+            border: 1px solid #fff;
+            backdrop-filter: NONE;
         }
 
         .product-image {
@@ -174,7 +176,7 @@
         </section>
 
         <!-- Product Section -->
-        <section class="produck">
+        <section class="product">
             <div class="product-container">
                 @foreach($products as $product)
                 <div class="product-card">

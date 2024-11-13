@@ -1,4 +1,9 @@
 <style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        background: linear-gradient(to bottom, #001355, #0029BB);
+    }
+
     table.table {
         width: 100%;
         text-align: left;
@@ -43,10 +48,10 @@
             <?php $value = 0; ?>
             @if($cart->isEmpty())
             <div class="empty-cart">
-                <p>Keranjang belanja Anda kosong.</p>
+                <p class="text-white">Keranjang belanja Anda kosong.</p>
             </div>
             @else
-            <h2>Your Cart ({{ $cart->count() }} items)</h2>
+            <h2 class="text-white">Your Cart ({{ $cart->count() }} items)</h2>
 
             <table class="table table-striped">
                 <thead>
@@ -55,7 +60,7 @@
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Total</th>
-                        <th>Action</th> <!-- Tambahkan kolom untuk aksi -->
+                        <th>Action</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -65,18 +70,22 @@
                             <img src="{{ asset('storage/products/' . $cartItem->product->image) }}" alt="{{ $cartItem->product->title }}" style="width: 100px;">
                             <strong>{{ Str::limit($cartItem->product->title, 15) }}</strong>
                         </td>
-                        <td>Rp{{ number_format($cartItem->product->price, 2, ',', '.') }}</td>
+                        <td>Rp{{ number_format($cartItem->product->price, 0, ',', '.') }}</td>
                         <td>
-                            <input type="number" name="quantity" value="{{ $cartItem->qty }}" min="1" class="form-control w-1 d-inline">
+                            @if ($cartItem->product->stock > 0)
+                            <input type="number" name="quantity" value="{{ $cartItem->qty }}" min="1" max="{{ $cartItem->product->stock }}" class="form-control w-1 d-inline">
+                            @else
+                            <span class="text-danger">Stok Habis</span>
+                            @endif
                         </td>
-                        <td>Rp{{ number_format($cartItem->product->price * $cartItem->qty, 2, ',', '.') }}</td>
+                        <td>Rp{{ number_format($cartItem->product->price * $cartItem->qty, 0, ',', '.') }}</td>
                         <td>
                             <form action="{{ url('cart_delete', $cartItem->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
-                            <a class="btn btn-primary" href="{{ route('checkout.fromProduct', $cartItem->product_id) }}">Bayar</a> <!-- Aksi Bayar -->
+                            <a class="btn btn-primary" href="{{ route('checkout.fromProduct', $cartItem->product_id) }}">Checkout</a> <!-- Aksi Bayar -->
                         </td>
                     </tr>
                     <?php $value += $cartItem->product->price * $cartItem->qty; ?>
@@ -86,7 +95,7 @@
             @endif
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>

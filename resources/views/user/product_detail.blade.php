@@ -12,8 +12,8 @@
     <style>
         body {
             font-family: 'opensans', sans-serif;
-            background: linear-gradient(to left, #456494, #202D49, #1E3280, #000B71);
-            overflow-x: hidden; 
+            background: linear-gradient(to bottom, #001355, #0029BB);
+            overflow-x: hidden;
             max-width: 100%;
         }
 
@@ -160,7 +160,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 20px;   
+            margin-top: 20px;
         }
 
         .additional-images img {
@@ -228,17 +228,20 @@
             height: 1px;
             width: 100%;
             margin-bottom: 20px;
-            background-color: #000;
+            background-color: #fff;
         }
 
         .product-card {
             position: relative;
-            border: 1px solid #ddd;
             width: calc(17% - 25px);
-            background-color: #fff;
+            background: rgba(255, 255, 255, 0.76);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10.4px);
+            -webkit-backdrop-filter: blur(10.4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: start;
             height: auto;
         }
@@ -249,7 +252,8 @@
 
         .product-card:hover {
             transform: scale(1.03);
-            border: 1px solid #000;
+            border: 1px solid #fff;
+            backdrop-filter: none;
         }
 
         .product-image {
@@ -358,7 +362,11 @@
                 <span class="stars">★★★★☆</span> <!-- Example rating, you can use dynamic content here -->
                 <span>(120 reviews)</span>
             </div>
+            @if ($product->stock > 0)
             <div class="product-availability">Stock : {{ $product->stock }}</div>
+            @else
+            <span class="text-danger fs-5 fw-bold">Stok Habis</span>
+            @endif
 
             <div class="quantity">
                 <label for="quantity">Kuantitas</label>
@@ -392,8 +400,8 @@
     </div>
     <!-- other product -->
     <div class="product-container">
-        <h1 class="title">Produk Lainnya</h1>
         <div class="strip"></div>
+        <h1 class="title">Produk Lainnya</h1>
         @foreach($otherProducts as $product)
         <div class="product-card">
             <a href="{{ url('product_detail', $product->id) }}">

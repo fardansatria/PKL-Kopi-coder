@@ -11,6 +11,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <style>
+        body {
+            background: linear-gradient(to bottom, #001355, #0029BB);
+        }
     </style>
 </head>
 
@@ -40,7 +43,6 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr class="text-center">
-                                <th>ID Pesanan</th>
                                 <th>Gambar Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Kuantitas</th>
@@ -53,7 +55,6 @@
                         <tbody>
                             @forelse ($orders as $order)
                             <tr class="text-center align-middle">
-                                <td>{{ $order->id }}</td>
                                 <td class="d-flex flex-column align-items-center">
                                     @foreach ($order->items as $item)
                                     <img src="{{ asset('storage/products/' . $item->product->image) }}" class="img-fluid" style="width: 60px; height: 60px;">
@@ -73,7 +74,6 @@
                                 <td>Rp{{ number_format($order->total, 0, ',', '.') }}</td>
                                 <td>
                                     <div class="d-grid gap-2">
-                                        <a href="{{ route('order.show', $order->id) }}" class="btn btn-sm btn-primary">Tampilkan</a>
                                         @if ($order->status != 'canceled')
                                         <button type="button" class="btn btn-sm btn-success pay-button" data-snap-token="{{ $order->snap_token }}">Bayar</button>
                                         @endif

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-        Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::post('/checkoutt/{product_id}', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout/{product_id}', [CheckoutController::class, 'checkoutFromProduct'])->name('checkout.product');
         Route::get('/success', [CheckoutController::class, 'success'])->name('user.success');
         Route::get('checkout/from-product/{product_id}', [CheckoutController::class, 'checkoutFromProduct'])->name('checkout.fromProduct');
@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/sliders', SliderController::class);
     
     Route::get('/products/sold', [AdminController::class, 'soldProducts'])->name('product.sold');
+   
     //order di admin
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');

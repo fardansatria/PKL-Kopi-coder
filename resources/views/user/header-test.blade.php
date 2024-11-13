@@ -18,6 +18,7 @@
             font-family: 'opensans', sans-serif;
             margin: 0;
             padding: 0;
+            scroll-behavior: smooth;
         }
 
         header {
@@ -239,12 +240,12 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="bi bi-gear"></i> Settings
-                        </a>
+                        <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="#">
+                            <i class="bi bi-gear"></i> Tentang Kami
+                        </a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -266,10 +267,13 @@
         </div>
         <div class="horizontal-line"></div>
         <div class="center-nav">
-            <a href="{{url('/')}}">Product</a>
+            <a href="{{url('/')}}#product">Product</a>
         </div>
         <div class="center-nav">
-            <a href="{{url('/')}}">Flash Sale</a>
+            <a href="{{url('/')}}#merek" class="scroll-to-products">Merek</a>
+        </div>
+        <div class="center-nav">
+            <a href="{{url('/')}}#product-baru" class="scroll-to-products">Produk Baru</a>
         </div>
     </header>
 
@@ -278,5 +282,19 @@
 
 
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const target = document.querySelector(hash);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+    });
+</script>
 
 </html>

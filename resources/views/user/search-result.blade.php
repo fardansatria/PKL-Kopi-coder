@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'opensans', sans-serif;
-            background: linear-gradient(to left, #456494, #202D49, #1E3280, #000B71);
+            background: linear-gradient(to bottom, #001355, #0029BB);
             margin: 0;
             padding: 0;
         }
@@ -86,7 +86,7 @@
 
         .product-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 10px;
             justify-content: center;
             margin-top: 50px;
@@ -95,16 +95,16 @@
 
         .product-card {
             position: relative;
-            border: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.76);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10.4px);
+            -webkit-backdrop-filter: blur(10.4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
-            background-color: #fff;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: start;
             height: auto;
-            margin: 10px;
-            padding: 15px;
         }
 
         .product-card a {
@@ -113,7 +113,8 @@
 
         .product-card:hover {
             transform: scale(1.03);
-            border: 1px solid #000;
+            border: 1px solid #fff;
+            backdrop-filter: none;
         }
 
         .product-image {

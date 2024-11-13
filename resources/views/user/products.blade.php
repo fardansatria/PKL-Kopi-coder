@@ -39,13 +39,15 @@
 
         .product-card {
             position: relative;
-            border: 1px solid #ddd;
             width: calc(17% - 25px);
-            background-color: #fff;
+            background: rgba(255, 255, 255, 0.76);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10.4px);
+            -webkit-backdrop-filter: blur(10.4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: start;
             height: auto;
         }
@@ -56,7 +58,8 @@
 
         .product-card:hover {
             transform: scale(1.03);
-            border: 1px solid #000;
+            border: 1px solid #fff;
+            backdrop-filter: none;
         }
 
         .product-image {
@@ -132,34 +135,55 @@
             color: #ffd700;
             font-size: 1.5rem;
         }
+
+        .out-of-stock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Products</h1>
-    <div class="product-container">
+    <h1 class="text-white">Products</h1>
+    <div class="product-container" id="product">
         @foreach($products as $product)
         <div class="product-card">
             <a href="{{ url('product_detail', $product->id) }}">
                 <img src="{{ asset('/storage/products/' . $product->image) }}" alt="{{ $product->title }}" class="product-image">
-                <div class="product-info">
-                    <div class="product-title">{{ Str::limit($product->title, 20) }}</div>
-                    <div class="product-price">Rp{{ number_format( $product->price, 0, ',', '.' )}}</div>
-                </div>
-                <div class="product-rating">
-                    <span class="stars">★ </span> <!-- Example rating, you can use dynamic content here -->
-                    <span>4,5 | </span>
-                    <span>1 Terjual</span>
-                </div>
-            </a>
-            <form action="{{ url('add_cart', $product->id) }}" method="POST" class="btn-cart-form">
-                @csrf
-                <button type="submit" class="btn-cart">
-                    <i class="fa fa-shopping-cart"></i>
-                </button>
-            </form>
+                @if($product->stock <= 0)
+                    <div class="out-of-stock-overlay">Produk Habis
         </div>
-        @endforeach
+        @endif
+        <div class="product-info">
+            <div class="product-title">{{ Str::limit($product->title, 20) }}</div>
+            <div class="product-price">Rp{{ number_format( $product->price, 0, ',', '.' )}}</div>
+        </div>
+        <div class="product-rating">
+            <span class="stars">★ </span> <!-- Example rating, you can use dynamic content here -->
+            <span>4,5 | </span>
+            <span>1 Terjual</span>
+        </div>
+        </a>
+        <form action="{{ url('add_cart', $product->id) }}" method="POST" class="btn-cart-form">
+            @csrf
+            <button type="submit" class="btn-cart">
+                <i class="fa fa-shopping-cart"></i>
+            </button>
+        </form>
+    </div>
+    @endforeach
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

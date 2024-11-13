@@ -22,9 +22,7 @@ return new class extends Migration
             $table->string('snap_token')->nullable();
             $table->string('cancel_product')->nullable();
             $table->unsignedBigInteger('user_id');
-
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id');
             $table->timestamps();
         });
     }

@@ -18,8 +18,8 @@
 
     <style>
         body {
-            font-family: 'opensans', sans-serif;
-            background: linear-gradient(to left, #456494, #202D49, #1E3280, #000B71);
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to bottom, #001355, #0029BB);
         }
 
         .merek-container {
@@ -28,11 +28,10 @@
             align-items: center;
             margin-top: 30px;
             max-width: 100%;
-            background: #fff;
+            background: #0029BB;
             overflow-x: hidden;
             padding: 20px 0;
             box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.87);
-
         }
 
         .merek {
@@ -57,32 +56,34 @@
             object-fit: cover;
         }
 
+        .line {
+            background-color: #fff;
+            width: 100%;
+            height: 20px;
+            
+        }
 
         .slick-prev,
         .slick-next {
             color: #000;
-            display: none;
-            visibility: hidden;
         }
 
         .slick-prev:hover,
         .slick-next:hover {
             color: #ff4757;
-            display: none;
-            visibility: hidden;
         }
 
         .slick-dots li button:before {
             color: #333;
-            display: none;
-            visibility: hidden;
         }
 
         .slick-dots li.slick-active button:before {
             color: #ff4757;
-            display: none;
-            visibility: hidden;
         }
+
+       
+
+       
     </style>
 </head>
 
@@ -91,12 +92,14 @@
         @include('user.header-test')
     </div>
     @include('user.slider')
-
     @include('user.products')
+    @include('user.product-terbaru')
+
+    
 
     <!-- Merek Slider Section -->
     <h1 class="merek">Merek</h1>
-    <div class="merek-container slider-merek">
+    <div class="merek-container slider-merek" id="merek">
         @foreach($mereks as $merek)
         <div class="merek-card">
             <a href="{{ route('products.filterByBrand', $merek->slug) }}">
@@ -105,6 +108,7 @@
         </div>
         @endforeach
     </div>
+    <div class="line"></div>
 
     {{ $mereks->links() }}
 
@@ -127,7 +131,8 @@
             swipeToSlide: true,
             prevArrow: '<button type="button" class="slick-prev"><i class="fa fa-chevron-left"></i></button>',
             nextArrow: '<button type="button" class="slick-next"><i class="fa fa-chevron-right"></i></button>',
-            responsive: [{
+            responsive: [
+                {
                     breakpoint: 1024,
                     settings: {
                         slidesToShow: 4, // 4 merek untuk layar medium
@@ -163,7 +168,7 @@
         @elseif(session('error'))
         Swal.fire({
             icon: "error",
-            title: "GAGAL!",
+            title: "GAGAL",
             text: "{{ session('error') }}",
             showConfirmButton: false,
             timer: 2000

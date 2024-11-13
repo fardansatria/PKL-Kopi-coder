@@ -8,7 +8,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(to bottom, #001355, #0029BB);
         }
 
         .checkout-container {
@@ -98,8 +98,7 @@
                 {{ session('error') }}
             </div>
             @endif
-
-            <form action="{{ route('checkout.store') }}" method="POST">
+            <form action="{{ route('checkout.store', $product->id) }}" method="POST">
                 @csrf
 
                 <div class="form-group">
